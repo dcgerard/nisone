@@ -69,3 +69,17 @@ test_that("cdf and CI work out", {
   expect_equal(p_wc(q = -2, center = "X/2") * 2, wc_alpha(width = 2, center = "X/2"))
   expect_equal((1 - p_wc(q = 2, center = "X/2")) * 2, wc_alpha(width = 2, center = "X/2"))
 })
+
+
+test_that("wc_width is correct based on Blachman and Machol", {
+  expect_equal(wc_width(alpha = 0.5, center = "X"), 1)
+  expect_equal(wc_width(alpha = 0.2, center = "X"), 2.42, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "X"), 4.84, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "X"), 9.68, tolerance = 1e-2)
+
+  expect_equal(wc_width(alpha = 0.5, center = "X/2"), 0.5)
+  expect_equal(wc_width(alpha = 0.2, center = "X/2"), 2.31, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "X/2"), 4.79, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "X/2"), 9.65, tolerance = 1e-2)
+
+})

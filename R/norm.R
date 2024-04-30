@@ -79,6 +79,60 @@ wc_alpha <- function(width, center = c("X", "X/2")) {
   return(alpha)
 }
 
+#' Given confidence level, provide width of CI
+#'
+#' This is assume X follows a normal distribution. Intervals are of the form
+#' X +/- t|X| or X/2 +/- t|X|.
+#'
+#' @param alpha The exclusion probability. We produce a (1-alpha)100 percent
+#'     confidence interval.
+#' @param center Either X, X/2, or the asymptotic width (approx).
+#'
+#' @examples
+#' wc_width(alpha = 0.2, center = "X")
+#' wc_width(alpha = 0.2, center = "X/2")
+#' wc_width(alpha = 0.2, center = "approx")
+#'
+#' wc_width(alpha = 0.05, center = "X")
+#' wc_width(alpha = 0.05, center = "X/2")
+#' wc_width(alpha = 0.05, center = "approx")
+#'
+#' @author David Gerard
+#'
+#' @export
+wc_width <- function(alpha, center = c("X", "X/2", "approx")) {
+  stopifnot(length(alpha) == 1,
+            alpha <= 0.5,
+            alpha >= 0)
+  if (alpha == 0) {
+    return(Inf)
+  }
+  center <- match.arg(center)
+  if (center == "approx" || alpha < 0.01) {
+    width <- sqrt(2 / (pi * exp(1))) / alpha
+  }
+  else if (center == "X") {
+    if (alpha == 0.5) {
+      return(1)
+    }
+    f <- function(width) {
+      alpha - wc_alpha(width = width, center = "X")
+    }
+    rout <- stats::uniroot(f = f, c(1, 50))
+    width <- rout$root
+  } else if (center == "X/2") {
+    if (alpha == 0.5) {
+      return(0.5)
+    }
+    f <- function(width) {
+      alpha - wc_alpha(width = width, center = "X/2")
+    }
+    rout <- stats::uniroot(f = f, c(0.5, 50))
+    width <- rout$root
+  }
+  return(width)
+}
+
 #' Implied posterior CDF based on n=1 confidence interval
 #'
 #' This is the CDF of (mu-X) / |X|, which is a pivotal quantity.
