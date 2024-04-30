@@ -218,4 +218,39 @@ d_wc <- function(x, center = c("X", "X/2")) {
   return(dvec)
 }
 
+#' n=1 confidence interval
+#'
+#' @param x A vector of single observations.
+#' @param A Where the CI should be centered
+#' @param type Either centered at x or the average of x and A
+#' @param level The level of the confidence interval.
+#'
+#' @examples
+#' ci1(c(1, 2, 10))
+#' ci1(c(1, 2, 10), type = "ave")
+#'
+#' @references
+#' \itemize{
+#'   \item{Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. IEEE transactions on information theory, 33(3), 373-382.}
+#' }
+#'
+#' @author David Gerard
+#'
+#' @export
+ci1 <- function(x, A = 0, type = c("x", "ave"), level = 0.95) {
+  type <- match.arg(type)
+  alpha <- 1 - level
+  if (type == "x") {
+    width <- wc_width(alpha = alpha, center = "X")
+    diff <- abs(x - A)
+    lower <- x - width * diff
+    upper <- x + width * diff
+  } else if (type == "ave") {
+    width <- wc_width(alpha = alpha, center = "X/2")
+    diff <- abs(x - A)
+    lower <- (x + A) / 2 - width * diff
+    upper <- (x + A) / 2 + width * diff
+  }
+  return(cbind(x = x, lower = lower, upper = upper))
+}
 
