@@ -44,7 +44,6 @@ dinvnorm <- function(x, imean = 0, isd = 1, log = FALSE) {
   if (!log) {
     dval <- exp(dval)
   }
-  dval[is.infinite(dval)] <- 0
   return(dval)
 }
 
