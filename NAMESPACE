@@ -2,7 +2,11 @@
 
 export(ci1)
 export(d_wc)
+export(dinvnorm)
 export(p_wc)
+export(pinvnorm)
+export(qinvnorm)
+export(rinvnorm)
 export(wc_alpha)
 export(wc_cov)
 export(wc_width)
