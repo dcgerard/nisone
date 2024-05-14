@@ -21,7 +21,7 @@ rinvnorm(n, imean = 0, isd = 1)
 
 \item{imean}{vector of means of inverse.}
 
-\item{isd}{vector of sd's of inverse.}
+\item{isd}{vector of standard deviations of inverse.}
 
 \item{log, log.p}{logical; if \code{TRUE}, probabilities p are given as log(p).}
 
@@ -39,9 +39,9 @@ probability (\code{pinvnorm}), or the quantile
 (\code{qinvnorm}) of the inverse normal distribution.
 }
 \description{
-Density, distribution function, quantile function and random generation
+Density, distribution function, quantile function, and random generation
 for the inverse normal distribution when parameterized by the mean and
-standard deviation of the inverse.
+standard deviation of the inverse (reciprocal).
 }
 \section{Functions}{
 \itemize{

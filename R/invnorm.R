@@ -1,13 +1,14 @@
 #' The inverse normal distribution
 #'
-#' Density, distribution function, quantile function and random generation
+#' Density, distribution function, quantile function, and random generation
 #' for the inverse normal distribution when parameterized by the mean and
-#' standard deviation of the inverse.
+#' standard deviation of the inverse (reciprocal).
+#'
 #' @param x vector of quantiles
 #' @param p vector of probabilities
 #' @param n sample size
 #' @param imean vector of means of inverse.
-#' @param isd vector of sd's of inverse.
+#' @param isd vector of standard deviations of inverse.
 #' @param log,log.p logical; if \code{TRUE}, probabilities p are given as log(p).
 #' @param lower.trail logical; if \code{TRUE} (default), probabilities are P(X<=x)
 #'     otherwise, P(X>x).
