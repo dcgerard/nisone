@@ -10,8 +10,11 @@ bci1 <- function(x, level = 0.95) {
   stopifnot(level >= 0, level <= 1)
   stopifnot(length(x) == 1, length(level) == 1)
   alpha <- 1 - level
-  qinvnorm(p = c(alpha / 2, 1 - alpha / 2), imean = 1 / x, isd = 1 / abs(x))
-  qinvnorm(p = 0.5, imean = 1 / x, isd = 1 / abs(x))
+  retlist <- list()
+  retlist$lower <- qinvnorm(p = alpha / 2, imean = 1 / x, isd = 1 / abs(x))
+  retlist$upper <- qinvnorm(p = 1 - alpha / 2, imean = 1 / x, isd = 1 / abs(x))
+  retlist$med <- qinvnorm(p = 0.5, imean = 1 / x, isd = 1 / abs(x))
+  return(retlist)
 }
 
 #' True level of the Bayesian credible interval at a given
