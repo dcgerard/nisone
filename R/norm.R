@@ -42,7 +42,7 @@ wc_cov <- function(width, center = c("X", "X/2")) {
   return(lambda)
 }
 
-#' Worst case exclusion probability  a n=1 confidence interval
+#' Worst case exclusion probability of a n=1 confidence interval
 #'
 #' This assumes the random variable X follows a normal distribution.
 #'

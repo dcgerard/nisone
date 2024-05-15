@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{wc_alpha}
 \alias{wc_alpha}
-\title{Worst case exclusion probability  a n=1 confidence interval}
+\title{Worst case exclusion probability of a n=1 confidence interval}
 \usage{
 wc_alpha(width, center = c("X", "X/2"))
 }
