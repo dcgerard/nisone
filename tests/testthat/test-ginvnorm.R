@@ -58,6 +58,15 @@ test_that("dginvnorm works", {
   mu <- -10
   tau <- 1
   f <- function(x) dginvnorm(x = x, alpha = alpha, mu = mu, tau = tau, log = FALSE)
-  ival <- integrate(f = f, lower = -Inf, upper = Inf)
+  ival <- stats::integrate(f = f, lower = -Inf, upper = Inf)
   expect_equal(ival$value, 1)
+
+  x <- seq(-10, 10, length.out = 500)
+  y <- dginvnorm(x = x, alpha = 2, mu = 1/10, tau = 1/10)
+  graphics::plot(x, y, type = "l")
+
+  # bench::mark(
+  #   ginormal::dgin(z = 100, alpha = 100, mu = 5, tau = 1, log = FALSE),
+  #   dginvnorm(x = 100, alpha = 100, mu = 5, tau = 1, log = FALSE)
+  # )
 })

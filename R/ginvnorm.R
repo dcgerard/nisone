@@ -148,7 +148,7 @@ hg1f1_special <- function(a, z, log = TRUE) {
 }
 
 
-dginvnorm <- function(x, alpha = 2, mu = 0, tau = 1, log = FALSE) {
+dginvnorm <- function(x, alpha, mu = 0, tau = 1, log = FALSE) {
   stopifnot(alpha > 1, tau > 0)
 
   ## normalizing constant
@@ -164,6 +164,16 @@ dginvnorm <- function(x, alpha = 2, mu = 0, tau = 1, log = FALSE) {
     dval <- exp(dval)
   }
   return(dval)
+}
+
+pginvnorm <- function(q, alpha, mu = 0, tau = 1) {
+  f <- function(x) dginvnorm(x = x, alpha = alpha, mu = mu, tau = tau, log = FALSE)
+  stats::integrate(f = f, lower = -Inf, upper = q)$value
+}
+
+qginvnorm <- function(p, alpha, mu = 0, tau = 1) {
+  f <- function(q) pginvnorm(q = q, alpha = alpha, mu = mu, tau = tau) - p
+  stats::uniroot(f = f, interval = c(-100, 100))$root
 }
 
 
