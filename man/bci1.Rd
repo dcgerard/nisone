@@ -4,10 +4,12 @@
 \alias{bci1}
 \title{Bayesian credible interval when n=1}
 \usage{
-bci1(x, level = 0.95)
+bci1(x, A = 0, level = 0.95)
 }
 \arguments{
 \item{x}{a double}
+
+\item{A}{The prior center.}
 
 \item{level}{The level of the credible interval}
 }

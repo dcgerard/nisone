@@ -226,7 +226,7 @@ d_wc <- function(x, center = c("X", "X/2")) {
 #' @param level The level of the confidence interval.
 #'
 #' @examples
-#' ci1(c(1, 2, 10))
+#' ci1(c(1, 2, 10), type = "x")
 #' ci1(c(1, 2, 10), type = "ave")
 #'
 #' @references
@@ -237,7 +237,7 @@ d_wc <- function(x, center = c("X", "X/2")) {
 #' @author David Gerard
 #'
 #' @export
-ci1 <- function(x, A = 0, type = c("x", "ave"), level = 0.95) {
+ci1 <- function(x, A = 0, type = c("ave", "x"), level = 0.95) {
   type <- match.arg(type)
   alpha <- 1 - level
   if (type == "x") {

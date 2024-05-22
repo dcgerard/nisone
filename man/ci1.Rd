@@ -4,7 +4,7 @@
 \alias{ci1}
 \title{n=1 confidence interval}
 \usage{
-ci1(x, A = 0, type = c("x", "ave"), level = 0.95)
+ci1(x, A = 0, type = c("ave", "x"), level = 0.95)
 }
 \arguments{
 \item{x}{A vector of single observations.}
@@ -19,7 +19,7 @@ ci1(x, A = 0, type = c("x", "ave"), level = 0.95)
 n=1 confidence interval
 }
 \examples{
-ci1(c(1, 2, 10))
+ci1(c(1, 2, 10), type = "x")
 ci1(c(1, 2, 10), type = "ave")
 
 }

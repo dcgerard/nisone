@@ -1,20 +1,26 @@
 #' Bayesian credible interval when n=1
 #'
 #' @param x a double
+#' @param A The prior center.
 #' @param level The level of the credible interval
 #'
 #' @author David Gerard
 #'
 #' @export
-bci1 <- function(x, level = 0.95) {
+bci1 <- function(x, A = 0, level = 0.95) {
   stopifnot(level >= 0, level <= 1)
-  stopifnot(length(x) == 1, length(level) == 1)
+  stopifnot(length(level) == 1, length(A) == 1)
+  retmat <- matrix(NA_real_, ncol = 4, nrow = length(x))
+  colnames(retmat) <- c("x", "med", "lower", "upper")
+  retmat[, "x"] <- x
+  x <- x - A
   alpha <- 1 - level
-  retlist <- list()
-  retlist$lower <- qinvnorm(p = alpha / 2, imean = 1 / x, isd = 1 / abs(x))
-  retlist$upper <- qinvnorm(p = 1 - alpha / 2, imean = 1 / x, isd = 1 / abs(x))
-  retlist$med <- qinvnorm(p = 0.5, imean = 1 / x, isd = 1 / abs(x))
-  return(retlist)
+  for (i in seq_along(x)) {
+    retmat[i, "lower"] <- qinvnorm(p = alpha / 2, imean = 1 / x[[i]], isd = 1 / abs(x[[i]])) + A
+    retmat[i, "upper"] <- qinvnorm(p = 1 - alpha / 2, imean = 1 / x[[i]], isd = 1 / abs(x[[i]])) + A
+    retmat[i, "med"] <- qinvnorm(p = 0.5, imean = 1 / x[[i]], isd = 1 / abs(x[[i]])) + A
+  }
+  return(retmat)
 }
 
 #' True level of the Bayesian credible interval at a given
