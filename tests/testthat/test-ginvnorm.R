@@ -32,6 +32,11 @@ test_that("1F1 works", {
     hypergeo1f1(a = 12/2, b = 1/2, z = 2, method = "series", nterms = 100)
   )
 
+  expect_equal(
+    exp(hg1f1_special(12, 0)),
+    hypergeo1f1(a = 0, b = 1/2, z = 2, method = "series", nterms = 100)
+  )
+
 })
 
 test_that("lse works", {
@@ -45,4 +50,14 @@ test_that("lse works", {
   expect_equal(log_sum_exp(c(1, Inf)), Inf)
   expect_equal(log_sum_exp(c(1, 2, NA), na.rm = FALSE), NA)
   expect_equal(log_sum_exp(c(1, 2, NA), na.rm = TRUE), log(sum(exp(c(1, 2)))))
+})
+
+
+test_that("dginvnorm works", {
+  alpha <- 10
+  mu <- -10
+  tau <- 1
+  f <- function(x) dginvnorm(x = x, alpha = alpha, mu = mu, tau = tau, log = FALSE)
+  ival <- integrate(f = f, lower = -Inf, upper = Inf)
+  expect_equal(ival$value, 1)
 })

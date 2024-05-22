@@ -87,7 +87,14 @@ log_sum_exp <- function(x, weights = rep(1, length(x)), na.rm = FALSE) {
 #'
 #' @noRd
 hg1f1_special <- function(a, z, log = TRUE) {
-  stopifnot(z > 0)
+  stopifnot(z >= 0)
+  if (z == 0) {
+    if (log) {
+      return(0)
+    } else {
+      return(1)
+    }
+  }
   if (a %% 2  == 1) {
     ## First two elements on log-scale
     m1_2 <- z
@@ -141,7 +148,23 @@ hg1f1_special <- function(a, z, log = TRUE) {
 }
 
 
+dginvnorm <- function(x, alpha = 2, mu = 0, tau = 1, log = FALSE) {
+  stopifnot(alpha > 1, tau > 0)
 
+  ## normalizing constant
+  lK <- (alpha - 1) * log(tau) +
+    -mu^2 / (2 * tau^2) +
+    (alpha - 1) * log(2) / 2 +
+    lgamma((alpha - 1) / 2) +
+    hg1f1_special(a = alpha - 1, z = mu^2 / (2 * tau^2), log = TRUE)
+
+  dval <- -1/(2 * tau^2) * (1 / x - mu)^2 - alpha * log(abs(x)) - lK
+
+  if (!log) {
+    dval <- exp(dval)
+  }
+  return(dval)
+}
 
 
 
