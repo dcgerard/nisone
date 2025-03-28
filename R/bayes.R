@@ -27,22 +27,22 @@ bci1 <- function(x, A = 0, level = 0.95) {
 #' coefficient of variation
 #'
 #' @param level The credible interval level.
-#' @param lambda One over the coefficient of variation. mu/sigma
+#' @param nu (mu - A)/sigma
 #'
 #' @return The true level of the (1-alpha) credible interval.
 #'
 #' @author David Gerard
 #'
 #' @export
-blevel <- function(level, lambda) {
+blevel <- function(level, nu) {
   alpha <- 1 - level
   c1 <- qinvnorm(p = alpha / 2, imean = 1, isd = 1)
   c2 <- qinvnorm(p = 1 - alpha / 2, imean = 1, isd = 1)
 
   if (c1 <= 0 && c2 >= 0) {
-    tl <- stats::pnorm(lambda * (1 - 1 / c2)) + 1 - stats::pnorm(lambda * (1 - 1 / c1))
+    tl <- stats::pnorm(nu * (1 - 1 / c2)) + 1 - stats::pnorm(nu * (1 - 1 / c1))
   } else if (c1 > 0 && c2 > 0) {
-    tl <- stats::pnorm(lambda * (1 - 1 / c2)) - stats::pnorm(lambda * (1 - 1 / c1))
+    tl <- stats::pnorm(nu * (1 - 1 / c2)) - stats::pnorm(nu * (1 - 1 / c1))
   } else {
     stop("invalid c1 or c2")
   }

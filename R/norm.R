@@ -29,17 +29,17 @@ wc_cov <- function(width, center = c("X", "X/2")) {
     if (width == 1) {
       return(0)
     }
-    lambda <- (1 - 1 / width^2) * sqrt(width * arcoth(width))
+    nu <- (1 - 1 / width^2) * sqrt(width * arcoth(width))
   } else if (center == "X/2") {
     stopifnot(width >= 0.5)
     if (width == 0.5) {
       return(0)
     }
-    lambda <- (4 * width^2 - 1) * sqrt(arcoth(2 * width) / (2 * (4 * width^3 + width)))
+    nu <- (4 * width^2 - 1) * sqrt(arcoth(2 * width) / (2 * (4 * width^3 + width)))
   } else {
     stop("here")
   }
-  return(lambda)
+  return(nu)
 }
 
 #' Worst case exclusion probability of a n=1 confidence interval
@@ -60,19 +60,19 @@ wc_cov <- function(width, center = c("X", "X/2")) {
 #' @export
 wc_alpha <- function(width, center = c("X", "X/2")) {
   center <- match.arg(center)
-  lambda <- wc_cov(width = width, center = center)
+  nu <- wc_cov(width = width, center = center)
   if (center == "X") {
     if (width == 1) {
       return(0.5)
     }
-    alpha <- stats::pnorm(lambda * width / (width - 1)) -
-      stats::pnorm(lambda * width / (width + 1))
+    alpha <- stats::pnorm(nu * width / (width - 1)) -
+      stats::pnorm(nu * width / (width + 1))
   } else if (center == "X/2") {
     if (width == 0.5) {
       return(0.5)
     }
-    alpha <- stats::pnorm(lambda * (2 * width + 1) / (2 * width - 1)) -
-      stats::pnorm(lambda * (2 * width - 1) / (2 * width + 1))
+    alpha <- stats::pnorm(nu * (2 * width + 1) / (2 * width - 1)) -
+      stats::pnorm(nu * (2 * width - 1) / (2 * width + 1))
   } else {
     stop("here")
   }
@@ -81,7 +81,7 @@ wc_alpha <- function(width, center = c("X", "X/2")) {
 
 #' Given confidence level, provide width of CI
 #'
-#' This is assume X follows a normal distribution. Intervals are of the form
+#' This assumes X follows a normal distribution. Intervals are of the form
 #' X +/- t|X| or X/2 +/- t|X|.
 #'
 #' @param alpha The exclusion probability. We produce a (1-alpha)100 percent
@@ -245,12 +245,14 @@ ci1 <- function(x, A = 0, type = c("ave", "x"), level = 0.95) {
     diff <- abs(x - A)
     lower <- x - width * diff
     upper <- x + width * diff
+    center <- x
   } else if (type == "ave") {
     width <- wc_width(alpha = alpha, center = "X/2")
     diff <- abs(x - A)
     lower <- (x + A) / 2 - width * diff
     upper <- (x + A) / 2 + width * diff
+    center <- (x + A) / 2
   }
-  return(cbind(x = x, lower = lower, upper = upper))
+  return(cbind(x = x, center = center, lower = lower, upper = upper))
 }
 

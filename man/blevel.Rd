@@ -5,12 +5,12 @@
 \title{True level of the Bayesian credible interval at a given
 coefficient of variation}
 \usage{
-blevel(level, lambda)
+blevel(level, nu)
 }
 \arguments{
 \item{level}{The credible interval level.}
 
-\item{lambda}{One over the coefficient of variation. mu/sigma}
+\item{nu}{(mu - A)/sigma}
 }
 \value{
 The true level of the (1-alpha) credible interval.

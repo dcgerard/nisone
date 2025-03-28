@@ -13,7 +13,7 @@ confidence interval.}
 \item{center}{Either X, X/2, or the asymptotic width (approx).}
 }
 \description{
-This is assume X follows a normal distribution. Intervals are of the form
+This assumes X follows a normal distribution. Intervals are of the form
 X +/- t|X| or X/2 +/- t|X|.
 }
 \examples{
