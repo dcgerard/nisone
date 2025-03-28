@@ -1,20 +1,24 @@
 ## W as a function of Z
+## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
 w_z <- function(z, n, eta, nu) {
   ## (n * z + nu)^2 / ((n + 1) * eta) - eta * (z - nu)^2 / ((n + 1) * eta)
   ((n^2 - eta) * z^2 + 2 * (n + eta) * nu * z + (1 - eta) * nu^2) / ((n + 1) * eta)
 }
 
 ## integrand
+## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
 fn <- function(z, n, eta, nu) {
   stats::pchisq(q = w_z(z = z, n = n, eta = eta, nu = nu), df = n - 1) * stats::dnorm(x = z)
 }
 
 ## Probability, objective
+## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
 obj_fn <- function(n, eta, nu) {
   stats::integrate(f = fn, lower = -Inf, upper = Inf, n = n, eta = eta, nu = nu)[[1]]
 }
 
 ## worst case alpha, optimized over nu
+## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
 worst_alpha <- function(n, eta) {
   oout <- stats::optim(
     par = 1,
@@ -86,10 +90,12 @@ aug_t <- function(x, A = 0, level = 0.95) {
   TOL <- sqrt(.Machine$double.eps)
   if (n %in% augtbounds$n && any(abs(alpha - augtbounds$alpha) < TOL)) {
     eta <- augtbounds$eta[augtbounds$n == n & abs(alpha - augtbounds$alpha) < TOL]
+    ## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
     nu <- augtbounds$nu[augtbounds$n == n & abs(alpha - augtbounds$alpha) < TOL]
   } else {
     eout <- eta_alpha(alpha = alpha, n = n)
     eta <- eout[["eta"]]
+    ## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
     nu <- eout[["nu"]]
   }
 
