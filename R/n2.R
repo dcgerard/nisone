@@ -1,25 +1,60 @@
-## W as a function of Z
-## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
-w_z <- function(z, n, eta, nu) {
-  ## (n * z + nu)^2 / ((n + 1) * eta) - eta * (z - nu)^2 / ((n + 1) * eta)
-  ((n^2 - eta) * z^2 + 2 * (n + eta) * nu * z + (1 - eta) * nu^2) / ((n + 1) * eta)
+#' w as a function of z
+#'
+#' @param z standard normal value
+#' @param n sample size
+#' @param eta2 multiplier squared
+#' @param nu (mu - A) / sigma
+#'
+#' @author David Gerard
+#'
+#' @noRd
+w_z <- function(z, n, eta2, nu) {
+  ## ((n * z - sqrt(n) * nu)^2 - eta2 * (z + sqrt(n) * nu)^2) / ((n + 1) * eta2)
+  ((n^2 - eta2) * z^2 - 2 * (n^(1.5) + sqrt(n) * eta2) * nu * z + (1 - eta2) * n * nu^2) / ((n + 1) * eta2)
 }
 
-## integrand
-## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
-fn <- function(z, n, eta, nu) {
-  stats::pchisq(q = w_z(z = z, n = n, eta = eta, nu = nu), df = n - 1) * stats::dnorm(x = z)
+#' Integrand.
+#'
+#' This is the integral from 0 to w_z wrt chi-squared pdf times standard normal pdf
+#'
+#' @param z normal data
+#' @param n sample size
+#' @param eta2 squared multiplier
+#' @param nu (mu - A) / sigma
+#'
+#' @author David Gerard
+#'
+#' @noRd
+fn <- function(z, n, eta2, nu) {
+  stats::pchisq(q = w_z(z = z, n = n, eta2 = eta2, nu = nu), df = n - 1) * stats::dnorm(x = z)
 }
 
-## Probability, objective
-## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
-obj_fn <- function(n, eta, nu) {
-  stats::integrate(f = fn, lower = -Inf, upper = Inf, n = n, eta = eta, nu = nu)[[1]]
+#' Alpha given eta2 and nu
+#'
+#' Error probability given eta2 and nu
+#'
+#' @param n sample size
+#' @param eta2 squared multiplier
+#' @param nu (mu - A) / 2
+#'
+#' @author David Gerard
+#'
+#' @noRd
+obj_fn <- function(n, eta2, nu) {
+  stats::integrate(f = fn, lower = -Inf, upper = Inf, n = n, eta2 = eta2, nu = nu)[[1]]
 }
 
-## worst case alpha, optimized over nu
-## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
-worst_alpha <- function(n, eta) {
+#' Largest alpha given eta2
+#'
+#' Optimizes \code{obj_fn} over nu to get worst error probability given eta2.
+#'
+#' @param n sample size
+#' @param eta2 squared multiplier
+#'
+#' @author David Gerard
+#'
+#' @noRd
+worst_alpha <- function(n, eta2) {
   oout <- stats::optim(
     par = 1,
     fn = obj_fn,
@@ -28,17 +63,28 @@ worst_alpha <- function(n, eta) {
     upper = Inf,
     control = list(fnscale = -1),
     n = n,
-    eta = eta)
+    eta2 = eta2)
   c(alpha = oout$value, nu = oout$par)
 }
 
-## find bounds of eta
+#' Find bounds on eta2 given alpha
+#'
+#' Just a simple boundary finding algorithm. Given alpha, we want to find
+#' eta2 such that worst_alpha(n, eta2) is alpha. This finds two bounds of
+#' opposite signs for worst_alpha(n, eta2) - alpha.
+#'
+#' @param alpha error probability
+#' @param n sample size
+#'
+#' @author David Gerard
+#'
+#' @noRd
 find_bounds <- function(alpha, n) {
-  low <- 0
+  low <- 0.01
   high <- exp(1)
   alpha_now <- 1
   while (alpha_now > alpha) {
-    aout <- worst_alpha(n = n, eta = high)
+    aout <- worst_alpha(n = n, eta2 = high)
     alpha_now <- aout[["alpha"]]
     if (alpha_now > alpha) {
       low <- high
@@ -48,10 +94,18 @@ find_bounds <- function(alpha, n) {
   return(c(low, high))
 }
 
+#' Returns the eta such that worst_alpha(n, eta^2) = alpha
+#'
+#' @param alpha error probability
+#' @param n sample size
+#'
+#' @author David Gerard
+#'
+#' @noRd
 eta_alpha <- function(alpha, n) {
   bounds <- find_bounds(alpha = alpha, n = n)
-  eout <- stats::uniroot(f = \(eta) alpha - worst_alpha(n = n, eta = eta)[["alpha"]], interval = bounds)
-  aout <- worst_alpha(n = n, eta = eout$root)
+  eout <- stats::uniroot(f = \(eta2) alpha - worst_alpha(n = n, eta2 = eta2)[["alpha"]], interval = bounds)
+  aout <- worst_alpha(n = n, eta2 = eout$root)
   c(eta = sqrt(eout$root), nu = aout[["nu"]], alpha = aout[["alpha"]])
 }
 
@@ -90,12 +144,10 @@ aug_t <- function(x, A = 0, level = 0.95) {
   TOL <- sqrt(.Machine$double.eps)
   if (n %in% augtbounds$n && any(abs(alpha - augtbounds$alpha) < TOL)) {
     eta <- augtbounds$eta[augtbounds$n == n & abs(alpha - augtbounds$alpha) < TOL]
-    ## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
     nu <- augtbounds$nu[augtbounds$n == n & abs(alpha - augtbounds$alpha) < TOL]
   } else {
     eout <- eta_alpha(alpha = alpha, n = n)
     eta <- eout[["eta"]]
-    ## nu is (A - mu) / (sigma / sqrt(n)), which is different than in paper
     nu <- eout[["nu"]]
   }
 

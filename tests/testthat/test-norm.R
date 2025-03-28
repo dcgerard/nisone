@@ -85,19 +85,19 @@ test_that("wc_width is correct based on Blachman and Machol", {
 
 test_that("Bayes is about same as regular for small alpha",{
   expect_equal(
-    ci1(x = 1, A = 2, type = "ave", level = 0.99),
+    ci1(x = 1, A = 2, type = "ave", level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     bci1(x = 1, A = 2, level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     tolerance = 1e-4
   )
 
   expect_equal(
-    ci1(x = 7, A = 0, type = "ave", level = 0.99),
+    ci1(x = 7, A = 0, type = "ave", level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     bci1(x = 7, A = 0, level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     tolerance = 1e-4
   )
 
   expect_equal(
-    ci1(x = c(1, -1), A = -2, type = "ave", level = 0.99),
+    ci1(x = c(1, -1), A = -2, type = "ave", level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     bci1(x =c(1, -1), A = -2, level = 0.99)[, c("x", "lower", "upper"), drop = FALSE],
     tolerance = 1e-4
   )
