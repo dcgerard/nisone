@@ -4,13 +4,13 @@
 #' for the inverse normal distribution when parameterized by the mean and
 #' standard deviation of the inverse (reciprocal).
 #'
-#' @param x vector of quantiles
+#' @param x,q vector of quantiles
 #' @param p vector of probabilities
 #' @param n sample size
 #' @param imean vector of means of inverse.
 #' @param isd vector of standard deviations of inverse.
 #' @param log,log.p logical; if \code{TRUE}, probabilities p are given as log(p).
-#' @param lower.trail logical; if \code{TRUE} (default), probabilities are P(X<=x)
+#' @param lower.tail logical; if \code{TRUE} (default), probabilities are P(X<=x)
 #'     otherwise, P(X>x).
 #'
 #' @return Either a random sample (\code{rinvnorm}),
@@ -23,7 +23,7 @@
 #' y <- dinvnorm(x = x, imean = 0.1, isd = 1)
 #' graphics::plot(x, y, type = "l")
 #'
-#' p <- pinvnorm(x = x, imean = 0.1, isd = 1)
+#' p <- pinvnorm(q = x, imean = 0.1, isd = 1)
 #' graphics::plot(x, p, type = "l", ylim = c(0, 1))
 #' graphics::abline(h = c(0, 1), lty = 2)
 #'
@@ -51,10 +51,10 @@ dinvnorm <- function(x, imean = 0, isd = 1, log = FALSE) {
 #' @describeIn invnorm Probability function.
 #'
 #' @export
-pinvnorm <- function(x, imean = 0, isd = 1, lower.trail = TRUE, log.p = FALSE) {
-  pvec <- stats::pnorm((imean * x - 1) / (isd * x)) - stats::pnorm(imean / isd)
-  pvec[x > 0] <- pvec[x > 0] + 1
-  pvec[x == 0] <- 1 - stats::pnorm(imean / isd)
+pinvnorm <- function(q, imean = 0, isd = 1, lower.tail = TRUE, log.p = FALSE) {
+  pvec <- stats::pnorm((imean * q - 1) / (isd * q)) - stats::pnorm(imean / isd)
+  pvec[q > 0] <- pvec[q > 0] + 1
+  pvec[q == 0] <- 1 - stats::pnorm(imean / isd)
   return(pvec)
 }
 

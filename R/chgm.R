@@ -1,26 +1,33 @@
-## CHGM computes the confluent hypergeometric function M(a,b,x).
-#
-#  Licensing:
-#
-#    This routine is copyrighted by Shanjie Zhang and Jianming Jin.  However,
-#    they give permission to incorporate this routine into a user program
-#    provided that the copyright is acknowledged.
-#
-#  Modified:
-#
-#    27 July 2012
-#
-#  Author:
-#
-#    Shanjie Zhang, Jianming Jin
-#
-#  Reference:
-#
-#    Shanjie Zhang, Jianming Jin,
-#    Computation of Special Functions,
-#    Wiley, 1996,
-#    ISBN: 0-471-11963-6,
-#    LC: QA351.C45.
+## Methods to calculate Kummer's confluent hypergeometric function
+
+#' CHGM computes the confluent hypergeometric function M(a,b,x).
+#'
+#' This is converted to R from the original Fortran routine in
+#' Zhang and Jin (1996).
+#'
+#' Known to not work well when a << -1 and x > 0, and when a >> 1 and x < 0
+#'
+#' @param a a
+#' @param b b
+#' @param x x
+#'
+#' @section Licensing:
+#' This routine is copyrighted by Shanjie Zhang and Jianming Jin.  However,
+#' they give permission to incorporate this routine into a user program
+#' provided that the copyright is acknowledged.
+#'
+#' @references
+#' Shanjie Zhang, Jianming Jin,
+#' Computation of Special Functions,
+#' Wiley, 1996,
+#' ISBN: 0-471-11963-6,
+#' LC: QA351.C45.
+#'
+#' Original Fortran code available at: \url{https://people.sc.fsu.edu/~jburkardt/f77_src/special_functions/special_functions.f}
+#'
+#' @author Shanjie Zhang, Jianming Jin, David Gerard (just converted it to R)
+#'
+#' @noRd
 chgm <- function(a, b, x) {
   a0 <- a
   a1 <- a
@@ -127,190 +134,162 @@ chgm <- function(a, b, x) {
   return(hg)
 }
 
-## Original fortran code:
-#     subroutine chgm ( a, b, x, hg ) bind(C, name = "chgm_")
-#
-#     !*****************************************************************************80
-#     !
-#     !! CHGM computes the confluent hypergeometric function M(a,b,x).
-#     !
-#     !  Licensing:
-#     !
-#     !    This routine is copyrighted by Shanjie Zhang and Jianming Jin.  However,
-#     !    they give permission to incorporate this routine into a user program
-#     !    provided that the copyright is acknowledged.
-#     !
-#     !  Modified:
-#     !
-#     !    27 July 2012
-#     !
-#     !  Author:
-#     !
-#     !    Shanjie Zhang, Jianming Jin
-#     !
-#     !  Reference:
-#     !
-#     !    Shanjie Zhang, Jianming Jin,
-#     !    Computation of Special Functions,
-#     !    Wiley, 1996,
-#     !    ISBN: 0-471-11963-6,
-#     !    LC: QA351.C45.
-#     !
-#     !  Parameters:
-#     !
-#     !    Input, real ( kind = rk ) A, B, parameters.
-#     !
-#     !    Input, real ( kind = rk ) X, the argument.
-#     !
-#     !    Output, real ( kind = rk ) HG, the value of M(a,b,x).
-#     !
-#       integer, parameter :: rk = kind ( 1.0D+00 )
-#
-#
-#       real(c_double) :: a
-#       real ( kind = rk ) a0
-#       real ( kind = rk ) a1
-#       real(c_double) :: b
-#       real(c_double) :: hg
-#       real ( kind = rk ) hg1
-#       real ( kind = rk ) hg2
-#       integer i
-#       integer j
-#       integer k
-#       integer la
-#       integer m
-#       integer n
-#       integer nl
-#       real ( kind = rk ) pi
-#       real ( kind = rk ) r
-#       real ( kind = rk ) r1
-#       real ( kind = rk ) r2
-#       real ( kind = rk ) rg
-#       real ( kind = rk ) sum1
-#       real ( kind = rk ) sum2
-#       real ( kind = rk ) ta
-#       real ( kind = rk ) tb
-#       real ( kind = rk ) tba
-#       real(c_double) :: x
-#       real ( kind = rk ) x0
-#       real ( kind = rk ) xg
-#       real ( kind = rk ) y0
-#       real ( kind = rk ) y1
-#
-#       pi = 3.141592653589793D+00
-#       a0 = a
-#       a1 = a
-#       x0 = x
-#       hg = 0.0D+00
-#
-#       if ( b == 0.0D+00 .or. b == - abs ( int ( b ) ) ) then
-#         hg = 1.0D+300
-#       else if ( a == 0.0D+00 .or. x == 0.0D+00 ) then
-#         hg = 1.0D+00
-#       else if ( a == -1.0D+00 ) then
-#         hg = 1.0D+00 - x / b
-#       else if ( a == b ) then
-#         hg = exp ( x )
-#       else if ( a - b == 1.0D+00 ) then
-#         hg = ( 1.0D+00 + x / b ) * exp ( x )
-#       else if ( a == 1.0D+00 .and. b == 2.0D+00 ) then
-#         hg = ( exp ( x ) - 1.0D+00 ) / x
-#       else if ( a == int ( a ) .and. a < 0.0D+00 ) then
-#         m = int ( - a )
-#         r = 1.0D+00
-#         hg = 1.0D+00
-#         do k = 1, m
-#           r = r * ( a + k - 1.0D+00 ) / k / ( b + k - 1.0D+00 ) * x
-#           hg = hg + r
-#         end do
-#       end if
-#
-#       if ( hg /= 0.0D+00 ) then
-#         return
-#       end if
-#
-#       if ( x < 0.0D+00 ) then
-#         a = b - a
-#         a0 = a
-#         x = abs ( x )
-#       end if
-#
-#       if ( a < 2.0D+00 ) then
-#         nl = 0
-#       end if
-#
-#       if ( 2.0D+00 <= a ) then
-#         nl = 1
-#         la = int ( a )
-#         a = a - la - 1.0D+00
-#       end if
-#
-#       do n = 0, nl
-#
-#         if ( 2.0D+00 <= a0 ) then
-#           a = a + 1.0D+00
-#         end if
-#
-#         if ( x <= 30.0D+00 + abs ( b ) .or. a < 0.0D+00 ) then
-#
-#           hg = 1.0D+00
-#           rg = 1.0D+00
-#           do j = 1, 500
-#             rg = rg * ( a + j - 1.0D+00 ) &
-#               / ( j * ( b + j - 1.0D+00 ) ) * x
-#             hg = hg + rg
-#             if ( abs ( rg / hg ) < 1.0D-15 ) then
-#               exit
-#             end if
-#           end do
-#
-#         else
-#
-#           call gamma ( a, ta )
-#           call gamma ( b, tb )
-#           xg = b - a
-#           call gamma ( xg, tba )
-#           sum1 = 1.0D+00
-#           sum2 = 1.0D+00
-#           r1 = 1.0D+00
-#           r2 = 1.0D+00
-#           do i = 1, 8
-#             r1 = - r1 * ( a + i - 1.0D+00 ) * ( a - b + i ) / ( x * i )
-#             r2 = - r2 * ( b - a + i - 1.0D+00 ) * ( a - i ) / ( x * i )
-#             sum1 = sum1 + r1
-#             sum2 = sum2 + r2
-#           end do
-#           hg1 = tb / tba * x ** ( - a ) * cos ( pi * a ) * sum1
-#           hg2 = tb / ta * exp ( x ) * x ** ( a - b ) * sum2
-#           hg = hg1 + hg2
-#
-#         end if
-#
-#         if ( n == 0 ) then
-#           y0 = hg
-#         else if ( n == 1 ) then
-#           y1 = hg
-#         end if
-#
-#       end do
-#
-#       if ( 2.0D+00 <= a0 ) then
-#         do i = 1, la - 1
-#           hg = ( ( 2.0D+00 * a - b + x ) * y1 + ( b - a ) * y0 ) / a
-#           y0 = y1
-#           y1 = hg
-#           a = a + 1.0D+00
-#         end do
-#       end if
-#
-#       if ( x0 < 0.0D+00 ) then
-#         hg = hg * exp ( x0 )
-#       end if
-#
-#       a = a1
-#       x = x0
-#
-#       return
-#     end subroutine chgm
-#
-# end module fortfuncs
+
+
+
+#' Different ways to calculate Kummer's confluent hypergeometric functions.
+#'
+#' I didn't end up using this since hg1f1_special() worked better in my use case.
+#' You can also try the gsl::hyperg_1F1() function for good general use, but
+#' bad use case in my application.
+#'
+#' This is often denoted by M(a,b,z) or 1F1(a,b,z). I use the NIST
+#' computational strategies \url{https://dlmf.nist.gov/13.29}.
+#'
+#' @param a first value
+#' @param b Second value
+#' @param z Third value
+#' @param method Either Maclaurin series or Integral solution
+#' @param nterms The number of terms of the Macllaurin series
+#'
+#' @author David Gerard
+#'
+#' @noRd
+hypergeo1f1 <- function(a, b, z, method = c("series", "integral"), nterms = 10) {
+  method <- match.arg(method)
+  if (method == "integral") {
+    stopifnot(b > a)
+    f <- function(t) exp(z * t) * t ^ (a - 1) * (1 - t) ^ (b - a - 1)
+    intout <- stats::integrate(f, lower = 0, upper = 1)
+    val <- gamma(b) * intout$value / (gamma(a) * gamma(b - a))
+  } else if (method == "series") {
+    val <- 1
+    for (i in seq_len(nterms)) {
+      val <- val + prod(seq(a, a + i - 1, by = 1)) / (factorial(i) * prod(seq(b, b + i - 1, by = 1))) * z ^ i
+    }
+  } else if (method == "recurrance") {
+    # https://dlmf.nist.gov/13.3#i
+    stopifnot(a %% 1 == 0)
+    m0 <- 1
+    m1 <- (b - 1) * exp(z) * z ^ (1 - b) * (gamma(b - 1)) ## not done, need incomplete gamma
+  }
+  return(val)
+}
+
+#' Hypergeometric1F1(a/2, 1/2, z) for positive integer a and positive number z
+#'
+#' AKA M(a/2, 1/2, z)
+#'
+#' Uses recurrence relation of https://dlmf.nist.gov/13.3#i
+#' 13.3.1
+#'
+#' `Hypergeometric1F1[1/2, 1/2, z]` = `exp(z)`
+#' `Hypergeometric1F1[3/2, 1/2, z]` = `exp(z) * (1 + 2 * z)`1z
+#' `Hypergeometric1F1[-1, 1/2, z]` = `1 - 2 * z`
+#' `Hypergeometric1F1[0, 1/2, z]` = `1`
+#' `Hypergeometric1F1[1, 1/2, z]` = `1 + exp(z) * sqrt(pi) * sqrt(z) * (2 * pnorm(sqrt(2 * z)) - 1)`
+#'
+#' Recurrence relation:
+#' `(b - a) * M(a - 1, b, z) + (2 * a - b + z) * M(a, b, z) - a * M(a + 1, b, z) = 0`
+#'
+#'
+#' @param a an integer
+#' @param z a positive number
+#'
+#' @author David Gerard
+#'
+#' @noRd
+hg1f1_special <- function(a, z, log = TRUE) {
+  stopifnot(z >= 0)
+  if (z == 0) {
+    if (log) {
+      return(0)
+    } else {
+      return(1)
+    }
+  }
+  if (a %% 2  == 1) {
+    ## First two elements on log-scale
+    m1_2 <- z
+    m3_2 <- z + log(1 + 2 * z)
+
+    if (a == 1) {
+      sval <- m1_2
+    } else if (a == 3) {
+      sval <- m3_2
+    } else {
+      m_nm1 <- m1_2
+      m_n <- m3_2
+      n <- 1.5
+      maxit <- (a - 3) / 2
+      for (i in 1:maxit) {
+        m_np1 <- log_sum_exp(x = c(m_nm1, m_n), weights = c(0.5 - n, 2 * n - 0.5 + z)) - log(n)
+        n <- n + 1
+        m_nm1 <- m_n
+        m_n <- m_np1
+      }
+      sval <- m_np1
+    }
+  } else if (a %% 2 == 0) {
+    ## First two elements on log-scale
+    m0_2 <- 0
+    m2_2 <- log_sum_exp(c(0, z + 0.5 * log(pi) + 0.5 * log(z) + log((2 * stats::pnorm(sqrt(2 * z)) - 1))))
+    if (a == 0) {
+      sval <- m0_2
+    } else if (a == 2) {
+      sval <- m2_2
+    } else {
+      m_nm1 <- m0_2
+      m_n <- m2_2
+      n <- 1
+      maxit <- (a - 2) / 2
+      for (i in 1:maxit) {
+        m_np1 <- log_sum_exp(x = c(m_nm1, m_n), weights = c(0.5 - n, 2 * n - 0.5 + z)) - log(n)
+        n <- n + 1
+        m_nm1 <- m_n
+        m_n <- m_np1
+      }
+      sval <- m_np1
+    }
+  } else {
+    stop("a is not an integer")
+  }
+  if (!log) {
+    sval <- exp(sval)
+  }
+  return(sval)
+}
+
+#' log-sum-exp trick
+#'
+#' Calculates log(w_1e^{x_1} + w_2e^{x_2} + ... + w_ne^{x_n})
+#' for given values of x and w
+#'
+#' @param x The log of the summands
+#' @param weights The weights. Possibly negative, as long as sum is positive,
+#'     but I don't check this.
+#'
+#'
+#' @author David Gerard
+#'
+#' @noRd
+log_sum_exp <- function(x, weights = rep(1, length(x)), na.rm = FALSE) {
+  stopifnot(length(weights) == length(x))
+  if (na.rm) {
+    weights <- weights[!is.na(x)]
+    x <- x[!is.na(x)]
+  } else if (any(is.na(x))) {
+    return(NA)
+  }
+  if (all(x == -Inf)) {
+    return(-Inf)
+  } else if (any(x == Inf)) {
+    return(Inf)
+  } else {
+    z <- max(x)
+    return(log(sum(weights * exp(x-z))) + z)
+  }
+}
+
+
+

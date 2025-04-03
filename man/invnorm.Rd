@@ -10,14 +10,14 @@
 \usage{
 dinvnorm(x, imean = 0, isd = 1, log = FALSE)
 
-pinvnorm(x, imean = 0, isd = 1, lower.trail = TRUE, log.p = FALSE)
+pinvnorm(q, imean = 0, isd = 1, lower.tail = TRUE, log.p = FALSE)
 
 qinvnorm(p, imean = 0, isd = 1)
 
 rinvnorm(n, imean = 0, isd = 1)
 }
 \arguments{
-\item{x}{vector of quantiles}
+\item{x, q}{vector of quantiles}
 
 \item{imean}{vector of means of inverse.}
 
@@ -25,7 +25,7 @@ rinvnorm(n, imean = 0, isd = 1)
 
 \item{log, log.p}{logical; if \code{TRUE}, probabilities p are given as log(p).}
 
-\item{lower.trail}{logical; if \code{TRUE} (default), probabilities are P(X<=x)
+\item{lower.tail}{logical; if \code{TRUE} (default), probabilities are P(X<=x)
 otherwise, P(X>x).}
 
 \item{p}{vector of probabilities}
@@ -59,7 +59,7 @@ x <- seq(-4, 4, length.out = 300)
 y <- dinvnorm(x = x, imean = 0.1, isd = 1)
 graphics::plot(x, y, type = "l")
 
-p <- pinvnorm(x = x, imean = 0.1, isd = 1)
+p <- pinvnorm(q = x, imean = 0.1, isd = 1)
 graphics::plot(x, p, type = "l", ylim = c(0, 1))
 graphics::abline(h = c(0, 1), lty = 2)
 
