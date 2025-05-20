@@ -48,3 +48,14 @@ blevel <- function(level, nu) {
   }
   return(tl)
 }
+
+bcin <- function(x, A = 0, level = 0.95) {
+  y <- x - A
+  alpha <- length(x) + 1
+  mu <- sum(y) / sum(y^2)
+  tau <- 1 / sqrt(sum(y^2))
+
+  al <- (1 - level) / 2
+  mginvnorm(alpha = alpha, mu = mu, tau = tau)
+  qginvnorm(p = 0.5, alpha = alpha, mu = mu, tau = tau)
+}

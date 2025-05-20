@@ -134,9 +134,6 @@ chgm <- function(a, b, x) {
   return(hg)
 }
 
-
-
-
 #' Different ways to calculate Kummer's confluent hypergeometric functions.
 #'
 #' I didn't end up using this since hg1f1_special() worked better in my use case.
@@ -290,6 +287,3 @@ log_sum_exp <- function(x, weights = rep(1, length(x)), na.rm = FALSE) {
     return(log(sum(weights * exp(x-z))) + z)
   }
 }
-
-
-

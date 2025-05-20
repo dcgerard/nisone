@@ -52,12 +52,12 @@ test_that("mean is same as in Robert (1991) Generalized inverse normal distribut
   # See Lemma 2 of that paper
   alpha <- 6
   mu <- 3
-  tau2 <- 4
+  tau <- 2
 
-  rmean <- mu / tau2 * chgm((alpha - 1) / 2, 3 / 2, mu^2 / (2 * tau2)) / chgm((alpha - 1) / 2, 1 / 2, mu^2 / (2 * tau2))
+  rmean <- mginvnorm(alpha = alpha, mu = mu, tau = tau)
 
   f <- function(z) {
-    z * dginvnorm(x = z, alpha = alpha, mu = mu, tau = sqrt(tau2), log = FALSE)
+    z * dginvnorm(x = z, alpha = alpha, mu = mu, tau = tau, log = FALSE)
   }
   nmean <- stats::integrate(f = f, lower = -Inf, upper = Inf)[[1]]
 

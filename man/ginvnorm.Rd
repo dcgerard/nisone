@@ -5,13 +5,19 @@
 \alias{dginvnorm}
 \alias{pginvnorm}
 \alias{qginvnorm}
-\title{The inverse normal distribution}
+\alias{mginvnorm}
+\alias{xginvnorm}
+\title{The generalized inverse normal distribution}
 \usage{
 dginvnorm(x, alpha, mu = 0, tau = 1, log = FALSE)
 
 pginvnorm(q, alpha, mu = 0, tau = 1, lower.tail = TRUE)
 
 qginvnorm(p, alpha, mu = 0, tau = 1)
+
+mginvnorm(alpha, mu = 0, tau = 1)
+
+xginvnorm(alpha, mu = 0, tau = 1)
 }
 \arguments{
 \item{x, q}{vector of quantiles}
@@ -37,8 +43,8 @@ probability (\code{pginvnorm}), or the quantile
 }
 \description{
 Density, distribution function, quantile function, and random generation
-for the \emph{generalized} inverse normal distribution when parameterized by the shape, mean, and
-standard deviation of the inverse (reciprocal).
+for the \emph{generalized} inverse normal distribution when parameterized
+by the shape, mean, and standard deviation of the inverse (reciprocal).
 }
 \section{Functions}{
 \itemize{
@@ -48,7 +54,16 @@ standard deviation of the inverse (reciprocal).
 
 \item \code{qginvnorm()}: Quantile function.
 
+\item \code{mginvnorm()}: Mean.
+
+\item \code{xginvnorm()}: Modes.
+
 }}
+\references{
+\itemize{
+\item{Robert, C. (1991). Generalized inverse normal distributions. Statistics & Probability Letters, 11(1), 37-41. \doi{10.1016/0167-7152(91)90174-P}}
+}
+}
 \author{
 David Gerard
 }

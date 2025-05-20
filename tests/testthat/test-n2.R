@@ -47,6 +47,17 @@ test_that("worst alpha is correct", {
   expect_equal(mean(t2 > eta^2), alpha, tolerance = 1e-2)
 })
 
+test_that("w_z is correct", {
+  z <- 1
+  n <- 3
+  eta2 <- 2
+  nu <- 1.5
+
+  expect_equal(
+    w_z(z = z, n = n, eta2 = eta2, nu = nu),
+    (n * z - sqrt(n) * nu)^2 / (eta2 * (n + 1)) - (z + sqrt(n) * nu)^2 / (n + 1)
+  )
+})
 
 test_that("old and new augtbounds are same", {
   load("./augtbounts_old.RData")

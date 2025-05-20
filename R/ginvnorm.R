@@ -1,8 +1,8 @@
-#' The inverse normal distribution
+#' The generalized inverse normal distribution
 #'
 #' Density, distribution function, quantile function, and random generation
-#' for the \emph{generalized} inverse normal distribution when parameterized by the shape, mean, and
-#' standard deviation of the inverse (reciprocal).
+#' for the \emph{generalized} inverse normal distribution when parameterized
+#' by the shape, mean, and standard deviation of the inverse (reciprocal).
 #'
 #' @param x,q vector of quantiles
 #' @param p vector of probabilities
@@ -13,6 +13,11 @@
 #' @param lower.tail logical; if \code{TRUE} (default), probabilities are P(X<=x)
 #'     otherwise, P(X>x).
 #'
+#' @references
+#' \itemize{
+#'  \item{Robert, C. (1991). Generalized inverse normal distributions. Statistics & Probability Letters, 11(1), 37-41. \doi{10.1016/0167-7152(91)90174-P}}
+#' }
+#'
 #' @return Either a random sample (\code{rginvnorm}),
 #'     the density (\code{dginvnorm}), the tail
 #'     probability (\code{pginvnorm}), or the quantile
@@ -22,7 +27,6 @@
 #'
 #' @author David Gerard
 NULL
-
 
 #' @describeIn ginvnorm Density function.
 #'
@@ -60,10 +64,35 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE) {
   return(ret)
 }
 
+#' Find bounds of quantile in qginvnorm, starting at mode
+#'
+#' @noRd
+find_bounds_q <- function(p, alpha, mu = 0, tau = 1) {
+  mvec <- xginvnorm(alpha = alpha, mu = mu, tau = tau)
+  mcent <- ifelse(mu < 0, mvec[[1]], mvec[[2]])
+}
+
 #' @describeIn ginvnorm Quantile function.
 #'
 #' @export
 qginvnorm <- function(p, alpha, mu = 0, tau = 1) {
   f <- function(q) pginvnorm(q = q, alpha = alpha, mu = mu, tau = tau) - p
   stats::uniroot(f = f, interval = c(-100, 100))$root
+}
+
+#' @describeIn ginvnorm Mean.
+#'
+#' @export
+mginvnorm <- function(alpha, mu = 0, tau = 1) {
+  mu / tau^2 * chgm((alpha - 1) / 2, 3 / 2, mu^2 / (2 * tau^2)) / chgm((alpha - 1) / 2, 1 / 2, mu^2 / (2 * tau^2))
+}
+
+#' @describeIn ginvnorm Modes.
+#'
+#' @export
+xginvnorm <- function(alpha, mu = 0, tau = 1) {
+  c(
+    -(mu + sqrt(mu^2 + 4 * alpha * tau^2)) / (2 * alpha * tau^2),
+    -(mu - sqrt(mu^2 + 4 * alpha * tau^2)) / (2 * alpha * tau^2)
+  )
 }
