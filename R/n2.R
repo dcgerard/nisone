@@ -104,7 +104,7 @@ find_bounds <- function(alpha, n) {
 #' @noRd
 eta_alpha <- function(alpha, n) {
   bounds <- find_bounds(alpha = alpha, n = n)
-  eout <- stats::uniroot(f = \(eta2) alpha - worst_alpha(n = n, eta2 = eta2)[["alpha"]], interval = bounds)
+  eout <- stats::uniroot(f = function(eta2) alpha - worst_alpha(n = n, eta2 = eta2)[["alpha"]], interval = bounds)
   aout <- worst_alpha(n = n, eta2 = eout$root)
   c(eta = sqrt(eout$root), nu = aout[["nu"]], alpha = aout[["alpha"]])
 }
