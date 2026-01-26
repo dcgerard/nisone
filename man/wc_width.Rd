@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{wc_width}
 \alias{wc_width}
-\title{Given confidence level, provide width of CI}
+\title{Given confidence level, provide half-width of CI}
 \usage{
 wc_width(alpha, center = c("X", "X/2", "approx"))
 }
@@ -11,6 +11,9 @@ wc_width(alpha, center = c("X", "X/2", "approx"))
 confidence interval.}
 
 \item{center}{Either X, X/2, or the asymptotic width (approx).}
+}
+\value{
+Returns half-width of worst-case confidence interval in units of |X|.
 }
 \description{
 This assumes X follows a normal distribution. Intervals are of the form

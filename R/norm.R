@@ -79,7 +79,7 @@ wc_alpha <- function(width, center = c("X", "X/2")) {
   return(alpha)
 }
 
-#' Given confidence level, provide width of CI
+#' Given confidence level, provide half-width of CI
 #'
 #' This assumes X follows a normal distribution. Intervals are of the form
 #' X +/- t|X| or X/2 +/- t|X|.
@@ -87,6 +87,8 @@ wc_alpha <- function(width, center = c("X", "X/2")) {
 #' @param alpha The exclusion probability. We produce a (1-alpha)100 percent
 #'     confidence interval.
 #' @param center Either X, X/2, or the asymptotic width (approx).
+#'
+#' @return Returns half-width of worst-case confidence interval in units of |X|.
 #'
 #' @examples
 #' wc_width(alpha = 0.2, center = "X")
