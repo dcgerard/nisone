@@ -4,7 +4,7 @@
 \alias{aug_t}
 \title{Augmented t-interval}
 \usage{
-aug_t(x, A = 0, level = 0.95)
+aug_t(x, A = 0, level = 0.95, wt = 1)
 }
 \arguments{
 \item{x}{The vector of data}
@@ -12,6 +12,9 @@ aug_t(x, A = 0, level = 0.95)
 \item{A}{The prior mean}
 
 \item{level}{The level of the interval}
+
+\item{wt}{Prior weight for A. This is interpreted as how many replicates of
+A the t-statistic has.}
 }
 \description{
 Caculates a t-interval using augmented data \code{c(x,A)}. The multiplier
