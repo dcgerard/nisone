@@ -4,8 +4,7 @@
 #' @param n sample size
 #' @param eta2 multiplier squared
 #' @param nu (mu - A) / sigma
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
-#'     A the t-statistic has.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -24,7 +23,7 @@ w_z <- function(z, n, eta2, nu, wt = 1) {
 #' @param n sample size
 #' @param eta2 squared multiplier
 #' @param nu (mu - A) / sigma
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'     A the t-statistic has.
 #'
 #' @author David Gerard
@@ -41,8 +40,7 @@ fn <- function(z, n, eta2, nu, wt = 1) {
 #' @param n sample size
 #' @param eta2 squared multiplier
 #' @param nu (mu - A) / 2
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
-#'     A the t-statistic has.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -57,8 +55,7 @@ obj_fn <- function(n, eta2, nu, wt = 1) {
 #'
 #' @param n sample size
 #' @param eta2 squared multiplier
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
-#'     A the t-statistic has.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -85,8 +82,7 @@ worst_alpha <- function(n, eta2, wt = 1) {
 #'
 #' @param alpha error probability
 #' @param n sample size
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
-#'     A the t-statistic has.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -133,8 +129,7 @@ eta_alpha <- function(alpha, n, wt = 1) {
 #' @param x The vector of data
 #' @param A The prior mean
 #' @param level The level of the interval
-#' @param wt Prior weight for A. This is interpreted as how many replicates of
-#'     A the t-statistic has.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -181,7 +176,7 @@ aug_t <- function(x, A = 0, level = 0.95, wt = 1) {
 #'
 #' @param x Data
 #' @param A Prior value
-#' @param wt Weight on prior value.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'
@@ -204,7 +199,7 @@ mean_aug <- function(x, A, wt = 1) {
 #'
 #' @param x Data
 #' @param A Prior value
-#' @param wt Weight on prior value.
+#' @param wt Weight for A. Don't touch this unless you know what you are doing.
 #'
 #' @author David Gerard
 #'

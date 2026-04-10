@@ -11,7 +11,7 @@ var_aug(x, A, wt = 1)
 
 \item{A}{Prior value}
 
-\item{wt}{Weight on prior value.}
+\item{wt}{Weight for A. Don't touch this unless you know what you are doing.}
 }
 \value{
 The augmented variance

@@ -13,8 +13,7 @@ aug_t(x, A = 0, level = 0.95, wt = 1)
 
 \item{level}{The level of the interval}
 
-\item{wt}{Prior weight for A. This is interpreted as how many replicates of
-A the t-statistic has.}
+\item{wt}{Weight for A. Don't touch this unless you know what you are doing.}
 }
 \description{
 Caculates a t-interval using augmented data \code{c(x,A)}. The multiplier
