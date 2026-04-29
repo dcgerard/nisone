@@ -49,13 +49,22 @@ blevel <- function(level, nu) {
   return(tl)
 }
 
+#' Bayesian credible interval when n >= 1
+#'
+#' @param x a double
+#' @param A The prior center.
+#' @param level The level of the credible interval
+#'
+#' @author David Gerard
+#'
+#' @export
 bcin <- function(x, A = 0, level = 0.95) {
   y <- x - A
   alpha <- length(x) + 1
   mu <- sum(y) / sum(y^2)
   tau <- 1 / sqrt(sum(y^2))
-
   al <- (1 - level) / 2
-  mginvnorm(alpha = alpha, mu = mu, tau = tau)
-  qginvnorm(p = 0.5, alpha = alpha, mu = mu, tau = tau)
+  retvec <- qginvnorm(p = c(al, 1 - al), alpha = alpha, mu = mu, tau = tau) + A
+  names(retvec) <- c("lower", "upper")
+  return(retvec)
 }

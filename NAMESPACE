@@ -2,6 +2,7 @@
 
 export(aug_t)
 export(bci1)
+export(bcin)
 export(bft)
 export(blevel)
 export(ci1)
