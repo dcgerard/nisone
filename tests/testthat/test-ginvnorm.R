@@ -93,3 +93,29 @@ test_that("pginvnorm and qginvnorm are inverses", {
     0
   )
 })
+
+test_that("ginvnorm is the same as invnorm for alpha = 2", {
+  expect_equal(
+    pinvnorm(q = 1, imean = 1, isd = 2),
+    pginvnorm(q = 1, alpha = 2, mu= 1, tau = 2)
+  )
+
+  expect_equal(
+    qinvnorm(p = 0.975, imean = 2, isd = 4),
+    qginvnorm(p = 0.975, alpha = 2, mu= 2, tau = 4),
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    qinvnorm(p = 0.975, imean = 10, isd = 6),
+    qginvnorm(p = 0.975, alpha = 2, mu= 10, tau = 6),
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    qinvnorm(p = 0.01, imean = 10, isd = 6),
+    qginvnorm(p = 0.01, alpha = 2, mu= 10, tau = 6),
+    tolerance = 1e-4
+  )
+
+})
