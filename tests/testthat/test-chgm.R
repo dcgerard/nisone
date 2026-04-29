@@ -7,6 +7,7 @@ test_that("chgm() has same values as Table 12.1 from Zhang and Jin (1996)",{
    result = c(0.128076,0.548354,0.69258,0.766254,0.841501,0.863378,0.879917,0.903286,0.201537,0.588291,0.720504,0.787854,0.856454,0.876353,0.891383,0.912594,0.277882,0.629338,0.74903,0.809834,0.8716,0.889478,0.902967,0.921981,0.357171,0.671512,0.778167,0.832201,0.886943,0.902753,0.914669,0.931448,0.439467,0.714833,0.807924,0.854958,0.902483,0.916179,0.926492,0.940995,0.524833,0.759323,0.838309,0.878112,0.918224,0.929758,0.938435,0.950624,0.613333,0.805,0.869333,0.901667,0.934167,0.943492,0.9505,0.960333,0.705034,0.851886,0.901005,0.925628,0.950314,0.957382,0.962688,0.970125,0.8,0.9,0.933333,0.95,0.966667,0.971429,0.975,0.98,0.898299,0.949364,0.966329,0.974789,0.983228,0.985634,0.987437,0.989958,1,1,1,1,1,1,1,1,1.105171,1.051928,1.034358,1.025638,1.016984,1.014528,1.01269,1.010126,1.213882,1.105171,1.069411,1.051709,1.034184,1.029218,1.025508,1.020338,1.326205,1.15975,1.105171,1.078218,1.0516,1.044073,1.038456,1.030636,1.442212,1.215688,1.141647,1.105171,1.069235,1.059095,1.051534,1.041019,1.561975,1.273007,1.178849,1.132573,1.087091,1.074284,1.064743,1.05149,1.685569,1.331731,1.216788,1.16043,1.105171,1.089642,1.078085,1.062048,1.81307,1.391882,1.255474,1.188747,1.123476,1.105171,1.091561,1.072695,1.944553,1.453484,1.294918,1.21753,1.14201,1.120872,1.105171,1.083431,2.080096,1.51656,1.335131,1.246785,1.160774,1.136747,1.118917,1.094256,2.219777,1.581136,1.376122,1.276518,1.17977,1.152798,1.1328,1.105171))
   for(i in seq_len(nrow(df))) {
     expect_equal(chgm(a=df$a[[i]],b=df$b[[i]],x=x),df$result[[i]],tolerance=1e-5)
+    expect_equal(.hyp1f1(a=df$a[[i]],b=df$b[[i]],z=x),df$result[[i]],tolerance=1e-5)
   }
 
   alpha <- 2
@@ -16,6 +17,10 @@ test_that("chgm() has same values as Table 12.1 from Zhang and Jin (1996)",{
   expect_equal(
     chgm(a = (alpha - 1)/2, b = 0.5, x = mu^2 / (2 * tau^2)),
     hg1f1_special(a = alpha - 1, z = mu^2 / (2 * tau^2), log = FALSE)
+  )
+  expect_equal(
+    chgm(a = (alpha - 1)/2, b = 0.5, x = mu^2 / (2 * tau^2)),
+    .hyp1f1(a = (alpha - 1)/2, b = 0.5, z = mu^2 / (2 * tau^2))
   )
 })
 
@@ -32,6 +37,11 @@ test_that("hg1f1_special is same as table 12.1 in Zhang and Jin (1996)", {
       df$res[[i]],
       tolerance = 1e-6
     )
+    expect_equal(
+      .hyp1f1(a = df$a[[i]], b = 0.5, z = df$x[[i]]),
+      df$res[[i]],
+      tolerance = 1e-6
+    )
   }
 
   df <- data.frame(
@@ -42,6 +52,11 @@ test_that("hg1f1_special is same as table 12.1 in Zhang and Jin (1996)", {
   for (i in seq_len(nrow(df))) {
     expect_equal(
       hg1f1_special(a = df$a[[i]] * 2, z = df$x[[i]], log = FALSE),
+      df$res[[i]],
+      tolerance = 1e-6
+    )
+    expect_equal(
+      .hyp1f1(a = df$a[[i]], b = 0.5, z = df$x[[i]]),
       df$res[[i]],
       tolerance = 1e-6
     )
@@ -58,6 +73,11 @@ test_that("hg1f1_special is same as table 12.1 in Zhang and Jin (1996)", {
       df$res[[i]],
       tolerance = 1e-6
     )
+    expect_equal(
+      .hyp1f1(a = df$a[[i]], b = 0.5, z = df$x[[i]]),
+      df$res[[i]],
+      tolerance = 1e-6
+    )
   }
 
   df <- data.frame(
@@ -68,6 +88,11 @@ test_that("hg1f1_special is same as table 12.1 in Zhang and Jin (1996)", {
   for (i in seq_len(nrow(df))) {
     expect_equal(
       hg1f1_special(a = df$a[[i]] * 2, z = df$x[[i]], log = FALSE),
+      df$res[[i]],
+      tolerance = 1e-6
+    )
+    expect_equal(
+      .hyp1f1(a = df$a[[i]], b = 0.5, z = df$x[[i]]),
       df$res[[i]],
       tolerance = 1e-6
     )
@@ -84,24 +109,35 @@ test_that("hg1f1_special is same as table 12.1 in Zhang and Jin (1996)", {
       df$res[[i]],
       tolerance = 1e-6
     )
+    expect_equal(
+      .hyp1f1(a = df$a[[i]], b = 0.5, z = df$x[[i]]),
+      df$res[[i]],
+      tolerance = 1e-6
+    )
   }
 })
 
 test_that("same as other packages", {
   # gsl::hyperg_1F1(a = 2, b = 3, x = 4)
-  chgm(a = 2, b = 3, x = 4)
-
+  # chgm(a = 2, b = 3, x = 4)
+  # .hyp1f1(a = 2, b = 3, z = 4)
+  #
   # gsl::hyperg_1F1(a = 2, b = 0.5, x = 1)
-  chgm(a = 2, b = 0.5, x = 1)
-  hg1f1_special(a = 4, z = 1, log = FALSE) ## a needs to be twice as large
-
-  # ## GSL is much faster
+  # chgm(a = 2, b = 0.5, x = 1)
+  # hg1f1_special(a = 4, z = 1, log = FALSE) ## a needs to be twice as large
+  # .hyp1f1(a = 2, b = 0.5, z = 1)
+  #
+  # # ## GSL is much faster
   # bench::mark(
   #   log(gsl::hyperg_1F1(a = 10000, b = 0.5, x = 4)),
   #   log(chgm(a = 10000, b = 0.5, x = 4)),
-  #   hg1f1_special(a = 20000, z = 4, log = TRUE)
+  #   hg1f1_special(a = 20000, z = 4, log = TRUE),
+  #   .hyp1f1(a = 10000, b = 0.5, z = 4, log = TRUE)
   # )
   # ## But GSL  cannot handle large x
   # gsl::hyperg_1F1(a = 2, b = 1/2, x = 100)
   # hg1f1_special(a = 4, z = 100)
+  # .hyp1f1(a = 2, b = 0.5, z = 100, log = TRUE)
+  # hg1f1_special(a = 4, z = 100000)
+  # .hyp1f1(a = 2, b = 0.5, z = 100000, log = TRUE)
 })

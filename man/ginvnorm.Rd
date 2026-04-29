@@ -5,6 +5,7 @@
 \alias{dginvnorm}
 \alias{pginvnorm}
 \alias{qginvnorm}
+\alias{rginvnorm}
 \alias{mginvnorm}
 \alias{xginvnorm}
 \title{The generalized inverse normal distribution}
@@ -14,6 +15,8 @@ dginvnorm(x, alpha, mu = 0, tau = 1, log = FALSE)
 pginvnorm(q, alpha, mu = 0, tau = 1, lower.tail = TRUE)
 
 qginvnorm(p, alpha, mu = 0, tau = 1)
+
+rginvnorm(n, alpha, mu = 0, tau = 1)
 
 mginvnorm(alpha, mu = 0, tau = 1)
 
@@ -34,6 +37,8 @@ xginvnorm(alpha, mu = 0, tau = 1)
 otherwise, P(X>x).}
 
 \item{p}{vector of probabilities}
+
+\item{n}{sample size}
 }
 \value{
 Either a random sample (\code{rginvnorm}),
@@ -54,11 +59,24 @@ by the shape, mean, and standard deviation of the inverse (reciprocal).
 
 \item \code{qginvnorm()}: Quantile function.
 
+\item \code{rginvnorm()}: Random generation.
+
 \item \code{mginvnorm()}: Mean.
 
 \item \code{xginvnorm()}: Modes.
 
 }}
+\examples{
+set.seed(50)
+samp <- rginvnorm(n = 1000, alpha = 4, mu = 0.5, tau = 1)
+x <- seq(min(samp), max(samp), length.out = 500)
+y <- dginvnorm(x = x, alpha = 4, mu = 0.5, tau = 1)
+modes <- xginvnorm(alpha = 4, mu = 0.5, tau = 1)
+graphics::hist(samp, freq = FALSE, breaks = 100, xlab = "x")
+graphics::lines(x, y, col = "red")
+graphics::abline(v = modes, col = "blue", lty = 2)
+
+}
 \references{
 \itemize{
 \item{Robert, C. (1991). Generalized inverse normal distributions. Statistics & Probability Letters, 11(1), 37-41. \doi{10.1016/0167-7152(91)90174-P}}

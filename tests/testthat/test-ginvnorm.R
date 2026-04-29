@@ -70,3 +70,26 @@ test_that("dginvnorm works", {
   #   dginvnorm(x = 100, alpha = 100, mu = 5, tau = 1, log = FALSE)
   # )
 })
+
+test_that("pginvnorm and qginvnorm are inverses", {
+  set.seed(1)
+  pvec <- stats::runif(10)
+
+  mu <- rnorm(1)
+  tau <- rchisq(1, df = 1)
+  alpha <- 4
+  expect_equal(
+    pginvnorm(qginvnorm(p = pvec, alpha = alpha, mu = mu, tau = tau), alpha = alpha, mu = mu, tau = tau),
+    pvec,
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    pginvnorm(q = 1000, alpha = 10, mu = 0, tau = 1),
+    1
+  )
+  expect_equal(
+    pginvnorm(q = -1000, alpha = 10, mu = 0, tau = 1),
+    0
+  )
+})

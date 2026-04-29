@@ -287,3 +287,93 @@ log_sum_exp <- function(x, weights = rep(1, length(x)), na.rm = FALSE) {
     return(log(sum(weights * exp(x-z))) + z)
   }
 }
+
+#' Kummer's confluent hypergeometric function 1F1(a; b; z)
+#'
+#' Evaluates the series  sum_{n=0}^{Inf} (a)_n / (b)_n * z^n / n!
+#' which converges for all finite z.
+#' <https://dlmf.nist.gov/13.2#E2>
+#'
+#' Terms are tracked as (log|term|, sign), accumulated via log-sum-exp
+#' into separate positive and negative buckets, combined at the end.
+#' This avoids intermediate overflow when z is large.
+#'
+#' @param log logical; if TRUE return log(1F1) instead of 1F1.
+#'
+#' @noRd
+.hyp1f1 <- function(a, b, z, log = FALSE, tol = 1e-14, max_iter = 1000L) {
+
+  # Log-scale summation via log-sum-exp.
+  # Terms are tracked as (log|term|, sign) and accumulated into separate
+  # positive and negative buckets, so intermediate overflow is impossible.
+  # In our application z = mu^2/(2*tau^2) >= 0, so all terms are positive
+  # and log_neg stays at -Inf throughout; the two-bucket logic is retained
+  # for correctness if z < 0 is ever passed.
+  log_term  <- 0     # log|term_n|, initialised to log(1) = 0
+  sign_term <- 1     # sign of term_n
+
+  log_pos <- 0       # log of running sum of positive terms  (starts at 1)
+  log_neg <- -Inf    # log of |running sum of negative terms| (none yet)
+
+  for (n in seq_len(max_iter)) {
+    ratio     <- (a + n - 1L) / ((b + n - 1L) * n) * z
+    log_term  <- log_term + base::log(abs(ratio))
+    sign_term <- sign_term * sign(ratio)
+
+    if (sign_term > 0) {
+      log_pos <- log_pos + log1p(exp(log_term - log_pos))
+    } else {
+      log_neg <- if (is.infinite(log_neg))
+        log_term
+      else
+        log_neg + log1p(exp(log_term - log_neg))
+    }
+
+    # Convergence: |term_n| < tol * |partial sum|, evaluated in log space
+    if (log_pos >= log_neg) {
+      log_abs_s <- log_pos + log1p(-exp(log_neg - log_pos))
+    } else {
+      log_abs_s <- log_neg + log1p(-exp(log_pos - log_neg))
+    }
+
+    if (log_term < base::log(tol) + log_abs_s) {
+      if (log_pos >= log_neg) {
+        result_sign <- 1
+      } else {
+        result_sign <- -1
+      }
+      if (result_sign < 0 && log) {
+        stop(".hyp1f1: log requested but 1F1 is negative")
+      }
+      if (log) {
+        return(log_abs_s)
+      } else {
+        return(result_sign * exp(log_abs_s))
+      }
+    }
+  }
+
+  ## If it got here, it failed to converge, so use hg1f1_special() as a backup
+  if (b == 0.5 && z >= 0) {
+    return(hg1f1_special(a = 2 * a, z = z, log = log))
+  }
+
+  ## If my special conditions are not met, throw an error.
+  stop(sprintf(
+    ".hyp1f1: failed to converge after %d iterations (a=%g, b=%g, z=%g)",
+    max_iter, a, b, z))
+}
+
+#' Log of normalizing constant K(alpha, mu, tau)
+#'
+#' @noRd
+.gin_log_K <- function(alpha, mu, tau) {
+  a     <- alpha
+  log_h <- .hyp1f1(0.5 * (a - 1), 0.5, mu^2 / (2 * tau^2), log = TRUE)
+  log_inv_K <- (a - 1) * log(tau) +
+    (-mu^2 / (2 * tau^2)) +
+    ((a - 1) / 2) * log(2) +
+    lgamma(0.5 * (a - 1)) +
+    log_h
+  return(-log_inv_K)
+}
