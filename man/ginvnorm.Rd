@@ -12,7 +12,7 @@
 \usage{
 dginvnorm(x, alpha, mu = 0, tau = 1, log = FALSE)
 
-pginvnorm(q, alpha, mu = 0, tau = 1, lower.tail = TRUE)
+pginvnorm(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions = 500L)
 
 qginvnorm(p, alpha, mu = 0, tau = 1)
 
@@ -35,6 +35,8 @@ xginvnorm(alpha, mu = 0, tau = 1)
 
 \item{lower.tail}{logical; if \code{TRUE} (default), probabilities are P(X<=x)
 otherwise, P(X>x).}
+
+\item{subdivisions}{The maximum number of subintervals used in \code{\link[stats]{integrate}()}.}
 
 \item{p}{vector of probabilities}
 
