@@ -57,125 +57,67 @@ dginvnorm <- function(x, alpha, mu = 0, tau = 1, log = FALSE) {
   return(dval)
 }
 
-
-adaptive_integrate <- function(f, lower, upper, mode, sigma = 1) {
-  # Map (lower, upper) → (a, b) in transformed space
-  g <- function(t) mode + sigma * tan(pi * t / 2)
-  g_prime <- function(t) sigma * pi / 2 / cos(pi * t / 2)^2
-
-  a <- atan((lower - mode) / sigma) * 2 / pi
-  b <- atan((upper - mode) / sigma) * 2 / pi
-
-  integrate(function(t) f(g(t)) * g_prime(t), a, b, subdivisions = 1000L)$value
-}
-
-
-pginvnorm_new <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions = 500L) {
-  stopifnot(alpha > 1, tau > 0)
-  # Calculate P(X >= 1 / q) where X = 1/Z and Z is ginvnorm
-
-  # Get modes to split up integral
-  if (alpha > 2) {
-    modes <- c(
-      mu/2 - sqrt(mu^2 + 4 * tau^2 * (alpha - 2)) / 2,
-      mu/2 + sqrt(mu^2 + 4 * tau^2 * (alpha - 2)) / 2
-    )
-    modes <- sort(modes)
-  } else {
-    modes <- c(0, 0) ## dummy values
-  }
-
-  ## Precompute since can be slow for large mu/tau
-  lK <- .gin_log_K(alpha = alpha, mu = mu, tau = tau)
-
-  # density of x = 1/z
-  f <- function(x) {
-    exp(lK - (x - mu)^2 / (2 * tau^2) + (alpha - 2) * log(abs(x)))
-  }
-
-  ## Precompute this one because it is used whenever q >= 0
-  if (any(q >= 0)) {
-    if (alpha > 2) {
-      stopifnot(modes[[1]] < 0, modes[[2]] > 0)
-      negval <- adaptive_integrate(f = f, lower = -Inf, upper = 0, mode = modes[[1]], sigma = tau)
-    } else {
-      negval <- stats::integrate(f = f, lower = -Inf, upper = 0, subdivisions = subdivisions)$value
-    }
-  }
-
-  lpvec <- rep(NA_real_, length.out = length(q))
-  for (i in seq_along(q)) {
-    if (is.na(q[[i]])) {
-      lpvec[[i]] <- NA_real_
-    } else if (q[[i]] == -Inf) {
-      lpvec[[i]] <- 0
-    } else if (q[[i]] == Inf) {
-      lpvec[[i]] <- 1
-    } else if (q[[i]] == 0) {
-      # If q = 0, then integral is from -Inf to 0
-      lpvec[[i]] <- negval
-    } else if (q[[i]] > 0) {
-      # If q > 0, then integral is from -Inf to 0 and from 1/q to Inf
-      if (alpha > 2 && modes[[2]] > 1 / q[[i]]) {
-        lpvec[[i]] <- negval + adaptive_integrate(f = f, lower = 1 / q[[i]], upper = Inf, mode = modes[[2]], sigma = tau)
-      } else {
-        lpvec[[i]] <- negval + stats::integrate(f = f, lower = 1 / q[[i]], upper = Inf, subdivisions = subdivisions)$value
-      }
-    } else {
-      # If q < 0, then integral is from 1/q to 0
-      if (alpha > 2 && modes[[1]] > 1 / q[[i]]) {
-        stopifnot(modes[[1]] < 0)
-        lpvec[[i]] <- adaptive_integrate(f = f, lower = 1 / q[[i]], upper = 0, mode = modes[[1]], sigma = tau)
-      } else {
-        lpvec[[i]] <- stats::integrate(f = f, lower = 1 / q[[i]], upper = 0, subdivisions = subdivisions)$value
-      }
-    }
-  }
-
-  if (isTRUE(lower.tail)) {
-    ret <- lpvec
-  } else {
-    ret <- 1 - lpvec
-  }
-
-  return(ret)
-}
-
 #' @describeIn ginvnorm Probability function.
 #'
 #' @export
 pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions = 500L) {
   stopifnot(alpha > 1, tau > 0)
-  # Calculate P(X >= 1 / q) where X = 1/Z and Z is ginvnorm
-
-  # Get modes to split up integral
-  if (alpha > 2) {
-    modes <- c(
-      mu/2 - sqrt(mu^2 + 4 * tau^2 * (alpha - 2)) / 2,
-      mu/2 + sqrt(mu^2 + 4 * tau^2 * (alpha - 2)) / 2
-    )
-    modes <- sort(modes)
-  } else {
-    modes <- c(0, 0) ## dummy values
+  if (alpha < 2) {
+    warning("pginvnorm is not stable for alpha less than 2.")
+    return(pginvnorm_old(q = q, alpha = alpha, mu = mu, tau = tau, lower.tail = lower.tail))
+  } else if (alpha == 2) {
+    return(pinvnorm(q = q, imean = mu, isd = tau, lower.tail = lower.tail))
   }
+
+  # Calculate P(X >= 1 / (tau * q)) where X = 1/(tau * Z) and Z is ginvnorm
 
   ## Precompute since can be slow for large mu/tau
   lK <- .gin_log_K(alpha = alpha, mu = mu, tau = tau)
 
-  # density of x = 1/z
+  # density of x = 1/(tau * z)
   f <- function(x) {
-    exp(lK - (x - mu)^2 / (2 * tau^2) + (alpha - 2) * log(abs(x)))
+    exp(lK + (alpha - 1) * log(abs(tau)) + (alpha - 2) * log(abs(x)) - (x - mu / tau)^2 / 2)
   }
+
+  ## Get modes
+  modes <- c(
+    (mu/tau - sqrt((mu/tau)^2 + 4 * (alpha - 2))) / 2,
+    (mu/tau + sqrt((mu/tau)^2 + 4 * (alpha - 2))) / 2
+  )
+  modes <- sort(modes)
+
+  ## Start at modes, expand out until capture all mass
+  totmass <- 0
+  mid <- mean(modes)
+  low1 <- modes[[1]] - 3
+  up1 <- min(modes[[1]] + 3, mid)
+  low2 <- max(modes[[2]] - 3, mid)
+  up2 <- modes[[2]] + 3
+  step <- 2
+  while(abs(totmass - 1) > 1e-3) {
+    low1 <- low1 - step
+    up1 <- min(up1 + step, mid)
+    low2 <- max(low2 - step, mid)
+    up2 <- up2 + step
+    mode1_mass <- stats::integrate(f = f, lower = low1, upper = up1, subdivisions = subdivisions)[[1]]
+    mode2_mass <- stats::integrate(f = f, lower = low2, upper = up2, subdivisions = subdivisions)[[1]]
+    totmass <- mode1_mass + mode2_mass
+
+    if (totmass < 1e-6) {
+      stop("Couldn't locate mass")
+    }
+  }
+
+  ## Just to be safe, do it two more time2
+  low1 <- low1 - step * 2
+  up1 <- min(up1 + step * 2, mid)
+  low2 <- max(low2 - step * 2, mid)
+  up2 <- up2 + step * 2
 
   ## Precompute this one because it is used whenever q >= 0
   if (any(q >= 0)) {
-    if (alpha > 2) {
-      stopifnot(modes[[1]] < 0, modes[[2]] > 0)
-      negval <- stats::integrate(f = f, lower = -Inf, upper = modes[[1]], subdivisions = subdivisions)$value +
-        stats::integrate(f = f, lower = modes[[1]], upper = 0, subdivisions = subdivisions)$value
-    } else {
-      negval <- stats::integrate(f = f, lower = -Inf, upper = 0, subdivisions = subdivisions)$value
-    }
+    negval <- stats::integrate(f, lower = min(low1, 0), upper = min(up1, 0), subdivisions = subdivisions)$value +
+      stats::integrate(f, lower = min(low2, 0), upper = min(up2, 0), subdivisions = subdivisions)$value
   }
 
   lpvec <- rep(NA_real_, length.out = length(q))
@@ -190,22 +132,22 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
       # If q = 0, then integral is from -Inf to 0
       lpvec[[i]] <- negval
     } else if (q[[i]] > 0) {
-      # If q > 0, then integral is from -Inf to 0 and from 1/q to Inf
-      if (alpha > 2 && modes[[2]] > 1 / q[[i]]) {
-        lpvec[[i]] <- negval +
-          stats::integrate(f = f, lower = 1 / q[[i]], upper = modes[[2]], subdivisions = subdivisions)$value +
-          stats::integrate(f = f, lower = modes[[2]], upper = Inf, subdivisions = subdivisions)$value
-      } else {
-        lpvec[[i]] <- negval + stats::integrate(f = f, lower = 1 / q[[i]], upper = Inf, subdivisions = subdivisions)$value
-      }
+      # If q > 0, then integral is from -Inf to 0 and from 1/(tau * q) to Inf
+      tq_bound <- 1 / (tau * q[[i]])
+      lpvec[[i]] <- negval +
+        stats::integrate(f = f, lower = max(low1, tq_bound), upper = max(up1, tq_bound), subdivisions = subdivisions)$value +
+        stats::integrate(f = f, lower = max(low2, tq_bound), upper = max(up2, tq_bound), subdivisions = subdivisions)$value
     } else {
-      # If q < 0, then integral is from 1/q to 0
-      if (alpha > 2 && modes[[1]] > 1 / q[[i]]) {
-        stopifnot(modes[[1]] < 0)
-        lpvec[[i]] <- stats::integrate(f = f, lower = 1 / q[[i]], upper = modes[[1]], subdivisions = subdivisions)$value +
-          stats::integrate(f = f, lower = modes[[1]], upper = 0, subdivisions = subdivisions)$value
-      } else {
-        lpvec[[i]] <- stats::integrate(f = f, lower = 1 / q[[i]], upper = 0, subdivisions = subdivisions)$value
+      # If q < 0, then integral is from 1/(tau * q) to 0
+      tq_bound <- 1 / (tau * q[[i]])
+      lpvec[[i]] <- 0
+      if (!(up1 < tq_bound || 0 < low1)) {
+        lpvec[[i]] <- lpvec[[i]] +
+          stats::integrate(f = f, lower = max(low1, tq_bound), upper = min(up1, 0), subdivisions = subdivisions)$value
+      }
+      if (!(up2 < tq_bound || 0 < low2)) {
+        lpvec[[i]] <- lpvec[[i]] +
+          stats::integrate(f = f, lower = max(low2, tq_bound), upper = min(up2, 0), subdivisions = subdivisions)$value
       }
     }
   }
@@ -218,7 +160,6 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
 
   return(ret)
 }
-
 
 pginvnorm_old <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE) {
   stopifnot(alpha > 1, tau > 0)
@@ -301,8 +242,8 @@ qginvnorm <- function(p, alpha, mu = 0, tau = 1) {
     if (p[[i]] > 0 && p[[i]] < 1) {
       lower <- max(qgrid[pgrid < p[[i]]])
       upper <- min(qgrid[pgrid > p[[i]]])
-      f <- function(q) pginvnorm(q = q, alpha = alpha, mu = mu, tau = tau) - p[[i]]
-      qvec[[i]] <- stats::uniroot(f = f, interval = c(lower, upper), maxiter=1e5)$root
+      f <- function(x) (pginvnorm(q = x, alpha = alpha, mu = mu, tau = tau) - p[[i]]) * 1e3
+      qvec[[i]] <- stats::uniroot(f = f, interval = c(lower, upper), check.conv = TRUE, tol = .Machine$double.eps^(0.75))$root
     }
   }
 

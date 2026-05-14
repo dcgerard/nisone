@@ -120,37 +120,26 @@ test_that("ginvnorm is the same as invnorm for alpha = 2", {
 
 })
 
-
-test_that("pginvnorm_old() and pginvnorm() are the same", {
-  skip("Not ready yet")
-  # I use modal information in pginvnorm() that should make it better behaved for more extreme tau
-
-  expect_equal(
-    pginvnorm(q = 0.001, alpha = 3, mu = 10, tau = 100),
-    pginvnorm_old(q = 0.001, alpha = 3, mu = 10, tau = 100)
-  )
+test_that("pginvnorm() and qginvnorm() are inverses", {
+  set.seed(1)
 
   alpha <- sample(2:100, size = 1)
   mu <- rnorm(n = 1, sd = 100)
   tau <- rchisq(n = 1, df = 1)
-  modes <- xginvnorm(alpha = alpha, mu = mu, tau = tau)
-  # expect_equal(
-  #   pginvnorm(q = modes[[2]], alpha = alpha, mu = mu, tau = tau),
-  #   pginvnorm_old(q = modes[[2]], alpha = alpha, mu = mu, tau = tau)
-  # )
+
+  # modes <- xginvnorm(alpha = alpha, mu = mu, tau = tau)
+  # pginvnorm(q = modes[[2]], alpha = alpha, mu = mu, tau = tau)
+  # pginvnorm_old(q = modes[[2]], alpha = alpha, mu = mu, tau = tau)
 
   cred <- qginvnorm(p = c(0.025, 0.975), alpha = alpha, mu = mu, tau = tau)
-  pginvnorm(q = cred[[1]], alpha = alpha, mu = mu, tau = tau)
-  pginvnorm(q = cred[[2]], alpha = alpha, mu = mu, tau = tau)
-
-  alpha <- 50
-  mu <- -20
-  tau <- 1e-3
-  modes <- xginvnorm(alpha = alpha, mu = mu, tau = tau)
   expect_equal(
-    pginvnorm(q = modes[[2]], alpha = alpha, mu = mu, tau = tau),
-    1,
-    tolerance = 1e-6
+    pginvnorm(q = cred[[1]], alpha = alpha, mu = mu, tau = tau),
+    0.025,
+    tolerance = 1e-5)
+  expect_equal(
+    pginvnorm(q = cred[[2]], alpha = alpha, mu = mu, tau = tau),
+    0.975,
+    tolerance = 1e-5
   )
 
 })
