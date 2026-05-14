@@ -108,7 +108,7 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
     }
   }
 
-  ## Just to be safe, do it two more time2
+  ## Just to be safe, do it two more times
   low1 <- low1 - step * 2
   up1 <- min(up1 + step * 2, mid)
   low2 <- max(low2 - step * 2, mid)
