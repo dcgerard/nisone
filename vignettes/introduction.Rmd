@@ -15,19 +15,23 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+set.seed(1)
 library(nisone)
 ```
 
-This document introduces the main functionality in the `{nisone}` R package. The most important of which are:
+This document introduces the main functions in the `{nisone}` R package. The most important of which are:
 
-- `ci1()`: Frequentist $n=1$ confidence interval
+- `ci1()`: Frequentist $n=1$ confidence intervals.
+- `wc_width()`: The half-width (in units of $|X-A|$) for the $n=1$ confidence intervals.
 - `aug_t()`: Augmented $t$-interval, the generalization of `ci1()` for $n\geq 2$.
-- `bci1()`: Bayesian version of `ci1()`
-- `blevel()`: The true confidence level of the credible interval from `bci1()`
+- `bci1()`: Bayesian version of `ci1()`.
+- `blevel()`: The true confidence level of the credible interval from `bci1()`.
 - `bcin()`: Bayesian interval for $n\geq 2$ assuming the coefficient of variation is exactly 1.
-- `bft()`: Bayes factor given a $t$-statistic
+- `bft()`: Bayes factor given a $t$-statistic.
 - `dinvnorm()`, `pinvnorm()`, `qinvnorm()`, `rinvnorm()`: The inverse normal distribution.
 - `dginvnorm()`, `pginvnorm()`, `qginvnorm()`, `rginvnorm()`: The generalized inverse normal distribution.
+
+These methods are all described in detail in Gerard (2026).
 
 # $n=1$ Confidence Intervals
 
@@ -91,8 +95,40 @@ blevel(level = 0.7, nu = 0.8)
 
 # $n \geq 1$ Augmented t-intervals
 
+Suppose we have data $X_1,\ldots,X_n \sim N(\mu, \sigma^2)$. Let $A$ be some prespecified value. Let $\hat{\mu}$ and $\hat{\sigma}^2$ be the
+sample mean and sample variance using the augmented data (all the $X$'s and $A$). We consider intervals of the form
+$$
+\hat{\mu} \pm \eta \hat{\sigma}/\sqrt{n + 1},
+$$
+where $\eta$ is chosen to control the error probability. We call these "augmented $t$-interval". The function that calculates them is `aug_t()`.
 
-See Gronau and Wagenmakers (2020) for more information on Bayes factors and *t*-statistics.
+If $A$ is close to $\mu$, the augmented $t$-intervals tend to be smaller on average. For $n=2$, you only need $A$ to be within about 4 standard deviations of $\mu$ to see large improvements.
+```{r}
+n <- 2
+mu <- 10
+sigma <- 4
+A <- 5
+x <- rnorm(n = n, mean = mu, sd = sigma)
+aug_t(x = x, A = A)
+t.test(x)$conf.int
+```
+
+
+An augmented $t$-interval can be viewed as an inverted frequentist test that uses a Bayes factor as a frequentest test statistic. Gronau and Wagenmakers (2020) studied the connection between Bayes factors and *t*-statistics. Let $\delta$ be the standardized effect size, let $\sigma^2$ be the variance (assumed equal in two-sample case). In the one-sample case, $\delta = \frac{\mu - \mu_0}{\sigma}$, where $\mu_0$ is the null value. In the two-sample case, $\delta = \frac{\mu_1 - \mu_2}{\sigma}$, where $\mu_1$ and $\mu_2$ are the means of the two-samples. We place the prior $1/\sigma^2$ under the null and $\pi(\delta)/\sigma^2$ under the alternative, for some arbitrary density $\pi(\cdot)$. Given this setting, the Bayes factor is a function of the $t$-statistic. 
+$$
+\mathrm{BF} = \frac{\int_{\delta}T_{\nu}(t|\sqrt{n_\delta}\delta)\pi(\delta)\mathrm{d}\delta}{T_{\nu}(t)},
+$$
+where $T_{\nu}()$ is the central $t$-density with $\nu$ degrees of freedom, and $T_{\nu}(|a)$ is the non-central $t$-density with $\nu$ degrees of freedom and non-centrality parameter $a$. In the one-sample case, $n_{\delta} = n$ and $\nu = n - 1$, and in the two-sample case $n_{\delta} = \left(\frac{1}{n_1} + \frac{1}{n_2}\right)^{-1}$ and $\nu = n_1 + n_2 - 2$. The `bft()` function will calculate this Bayes factor given a $t$-statistic and any prior distribution (absolutely continuous with respect to Lebesgue measure) you provide over $\delta$ (with Cauchy as a default). 
+```{r}
+tstat <- mean(x) / (sd(x) / length(x))
+bft(t = tstat, nu = length(x) - 1, nd = length(x))
+```
+To get the Bayes factor using augmented data, you assume that $\mu$ has a normal prior with mean $A$ and variance $\sigma^2$, then you just include $A$ in calculating the augmented $t$-statistic
+```{r}
+x_aug <- c(x, A)
+tstat <- mean(x_aug) / (sd(x_aug) / length(x_aug))
+bft(t = tstat, nu = length(x_aug) - 1, nd = length(x_aug))
+```
 
 # Generalized Inverse Normal Distribution
 
