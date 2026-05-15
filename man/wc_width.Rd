@@ -19,6 +19,12 @@ Returns half-width of worst-case confidence interval in units of |X|.
 This assumes X follows a normal distribution. Intervals are of the form
 X +/- t|X| or X/2 +/- t|X|.
 }
+\details{
+We use A = 0 for calculations, but the width doesn't change if A is
+non-zero. So you can think of
+intervals of the form center +/- width * |X - A| where
+center is either X or (X + A)/2.
+}
 \examples{
 wc_width(alpha = 0.2, center = "X")
 wc_width(alpha = 0.2, center = "X/2")

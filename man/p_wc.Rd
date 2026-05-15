@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{p_wc}
 \alias{p_wc}
-\title{Implied posterior CDF based on n=1 confidence interval}
+\title{Confidence distribution CDF based on n=1 confidence interval}
 \usage{
 p_wc(q, center = c("X", "X/2"))
 }
@@ -13,7 +13,8 @@ p_wc(q, center = c("X", "X/2"))
 \code{"X/2"}.}
 }
 \description{
-This is the CDF of (mu-X) / |X|, which is a pivotal quantity.
+This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
+confidence distribution, not the posterior.
 }
 \examples{
 qseq <- seq(-10, 10, length.out = 100)

@@ -18,6 +18,12 @@ at least 0.5 if \code{center = "X/2"}.}
 This assumes the random variable X is normal. Intervals are of the form
 center +/- width * |X|.
 }
+\details{
+We use A = 0 for calculations, but the worst
+case COV doesn't change if A is non-zero. So you can think of
+intervals of the form center +/- width * |X - A| where
+center is either X or (X + A)/2.
+}
 \examples{
 wc_cov(width = 2, center = "X")
 wc_cov(width = 2, center = "X/2")

@@ -1,0 +1,149 @@
+---
+title: "Introduction to nisone"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to nisone}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nisone)
+```
+
+This document introduces the main functionality in the `{nisone}` R package. The most important of which are:
+
+- `ci1()`: Frequentist $n=1$ confidence interval
+- `aug_t()`: Augmented $t$-interval, the generalization of `ci1()` for $n\geq 2$.
+- `bci1()`: Bayesian version of `ci1()`
+- `blevel()`: The true confidence level of the credible interval from `bci1()`
+- `bcin()`: Bayesian interval for $n\geq 2$ assuming the coefficient of variation is exactly 1.
+- `bft()`: Bayes factor given a $t$-statistic
+- `dinvnorm()`, `pinvnorm()`, `qinvnorm()`, `rinvnorm()`: The inverse normal distribution.
+- `dginvnorm()`, `pginvnorm()`, `qginvnorm()`, `rginvnorm()`: The generalized inverse normal distribution.
+
+# $n=1$ Confidence Intervals
+
+Suppose we have a single observations from a symmetric location-scale family. That is, $\rho()$ is any symmetric density function and the PDF of $X$ is $\frac{1}{\sigma}\rho\left(\frac{X-\mu}{\sigma}\right)$ for some center $\mu$ and some scale $\sigma$. For example, $X \sim N(\mu, \sigma^2)$. Given a prespecified value $A$, valid confidence intervals of the form
+$$
+X \pm \eta |X - A|
+$$
+and
+$$
+\frac{X + A}{2} \pm \eta |X - A|
+$$
+can be constructed to produce valid $(1 - \alpha)100\%$ confidence intervals. This is done by making $\eta$ large enough to bound the coverage probability below by $(1 - \alpha)$. See Blachman and Machol (1987).
+
+The function `ci1()` produces these confidence intervals where $\rho()$ is (i) the standard normal function, (ii) Cauchy, and (iii) uniform. Surprisingly, constructing intervals using a uniform distribution makes them valid $(1 - \alpha)100\%$ confidence intervals when $X$ has *any* unimodal density.
+
+Suppose we observe $X = 2$ and we use $A = 1$, then, centered at $X$, the various 95\% intervals are:
+```{r}
+ci1(x = 2, A = 1, type = "x", family = "cauchy")
+ci1(x = 2, A = 1, type = "x", family = "normal")
+ci1(x = 2, A = 1, type = "x", family = "uniform")
+```
+Centered at $(X + A) / 2$, they are
+```{r}
+ci1(x = 2, A = 1, type = "ave", family = "cauchy")
+ci1(x = 2, A = 1, type = "ave", family = "normal")
+ci1(x = 2, A = 1, type = "ave", family = "uniform")
+```
+
+# $n=1$ Bayesian Intervals
+
+In Gerard (2026), we showed that using the following prior produces posterior credible intervals that are asymptotically valid confidence intervals.
+$$
+\pi(\mu,\nu) = |\mu - A|^{-1}\delta_{\nu^*}(\nu), \text{ where}\\
+\nu = (\mu - A) / \sigma,\\
+\nu^* = \mathrm{argmax}_{\nu>0}\nu\rho\left(\nu\right),
+$$
+and $\delta_{\nu^*}(\nu)$ is a pointmass at $\nu^*$. This is asymptotic *not* in the sample size, but in the confidence level. So the credible intervals are approximate confidence intervals for small $\alpha$, which is the typical case.
+
+In the normal case, this corresponds to the prior
+$$
+\pi(\mu) = |\mu - A|^{-1}\\
+\sigma^2 = (\mu - A)^2 \text{ w.p. 1}.
+$$
+The resulting posterior distribution is inverse normal (see below). We have implemented this Bayesian approach in `bci1()`. Though, the asymptotics are so good that you end up getting almost the exact same interval as the frequentist $n=1$ interval,
+
+```{r}
+bci1(x = 1, A = 0)
+ci1(x = 1, A = 0)
+```
+
+The true level of the Bayesian credible intervals can be found by `blevel()`. It's almost exactly the correct level for 95\% confidence intervals. But they can dip a little further below the nominal level for smaller levels:
+```{r}
+blevel(level = 0.7, nu = 0.8)
+```
+
+# $n \geq 1$ Augmented t-intervals
+
+
+See Gronau and Wagenmakers (2020) for more information on Bayes factors and *t*-statistics.
+
+# Generalized Inverse Normal Distribution
+
+Robert (1991) considered the generalized inverse normal distribution of the form
+$$
+f(x|\alpha,\mu,\tau) = K(\alpha,\mu,\tau)|x|^{-\alpha}\exp\left\{-\frac{1}{2\tau^2}\left(\frac{1}{x}-\mu\right)^2\right\},
+$$
+where $K(\alpha,\mu,\tau)$ is the proportionality constant. When $\alpha = 2$, this corresponds to the inverse normal distribution (different from the inverse Gaussian distribution), where $\frac{1}{X} \sim N(\mu, \tau^2)$. The generalized inverse normal distribution shows up in Bayesian analysis when you parameterize the normal distribution in terms of its mean $\mu$ and its coefficient of variation $\nu = \mu / \tau$.
+
+The `nisone()` R package contains density, distribution, quantile, and random generation functions for the (generalized) inverse normal distribution. You can use this to get the full posterior distribution for $n=1$ intervals when $\rho()$ is normal. In the normal case, the marginal posterior of $\mu - A$ is inverse normal with inverse mean $\frac{1}{X - A}$ and inverse variance $\frac{1}{(X - A)^2}$. E.g., if we observed $X = 2$ and use $A = 1$, the full posterior density is
+```{r}
+museq <- seq(-2, 5, length.out = 500)
+X <- 2
+A <- 1
+density <- dinvnorm(x = museq - A, imean = 1 / (X - A), isd = 1 / (X - A)^2)
+plot(
+  museq, 
+  density,
+  type = "l",
+  xlab = expression(mu),
+  ylab = "Posterior Density")
+```
+
+You can get 95\% Credible intervals via
+```{r}
+qinvnorm(p = c(0.025, 0.975), imean = 1 / (X - A), isd = 1 / (X - A)^2) + A
+```
+Which agree with `bci1()`
+```{r}
+bci1(x = 2, A = 1)
+```
+
+More generally, we have functions for the generalized inverse normal.
+```{r}
+#| fig-width: 5
+#| fig.height: 3
+set.seed(50)
+qginvnorm(p = 0.025, alpha = 4, mu = 0.5, tau = 1)
+pginvnorm(q = -1.345, alpha = 4, mu = 0.5, tau = 1)
+samp <- rginvnorm(n = 1000, alpha = 4, mu = 0.5, tau = 1)
+x <- seq(min(samp), max(samp), length.out = 500)
+y <- dginvnorm(x = x, alpha = 4, mu = 0.5, tau = 1)
+modes <- xginvnorm(alpha = 4, mu = 0.5, tau = 1)
+hist(
+  samp,
+  freq = FALSE,
+  breaks = 100,
+  xlab = "x",
+  main = "Generalized Inverse Normal Density")
+lines(x, y, col = "#E69F00")
+abline(v = modes, col = "#56B4E9", lty = 2)
+```
+
+
+# References
+
+- Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. *IEEE Transactions on Information Theory*, 33(3), 373-382. [doi:10.1109/TIT.1987.1057306](https://doi.org/10.1109/TIT.1987.1057306)
+- Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian confidence intervals of the normal mean. *In preparation*.
+- Gronau, Q. F., Ly, A., & Wagenmakers, E. J. (2020). Informed Bayesian *t*-Tests. *The American Statistician*, 74(2), 137–143. [doi:10.1080/00031305.2018.1562983](https://doi.org/10.1080/00031305.2018.1562983)
+- Robert, C. (1991). Generalized inverse normal distributions. *Statistics & Probability Letters*, 11(1), 37-41. [doi:10.1016/0167-7152(91)90174-P](https://doi.org/10.1016/0167-7152(91)90174-P)

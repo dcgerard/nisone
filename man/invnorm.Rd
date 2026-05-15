@@ -69,6 +69,11 @@ s <- rinvnorm(n = 10000, imean = 0.1, isd = 1)
 stats::quantile(s, c(0.025, 0.5, 0.975))
 
 }
+\references{
+\itemize{
+\item{Robert, C. (1991). Generalized inverse normal distributions. Statistics & Probability Letters, 11(1), 37-41. \doi{10.1016/0167-7152(91)90174-P}}
+}
+}
 \author{
 David Gerard
 }

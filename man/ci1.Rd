@@ -4,19 +4,36 @@
 \alias{ci1}
 \title{n=1 confidence interval}
 \usage{
-ci1(x, A = 0, type = c("ave", "x"), level = 0.95)
+ci1(
+  x,
+  A = 0,
+  type = c("ave", "x"),
+  family = c("normal", "cauchy", "uniform"),
+  level = 0.95
+)
 }
 \arguments{
 \item{x}{A vector of single observations.}
 
-\item{A}{Where the CI should be centered}
+\item{A}{Your "prior knowledge" or "augmented data value".}
 
 \item{type}{Either centered at x or the average of x and A}
+
+\item{family}{Either the normal distribution, Cauchy, or uniform.}
 
 \item{level}{The level of the confidence interval.}
 }
 \description{
-n=1 confidence interval
+When you have one observation, \eqn{X} from some symmetric distribution
+with center \eqn{\mu}, for a pre-specified \eqn{A}, produces
+confidence intervals for the center form  \eqn{X \pm \eta |X - A|}
+(\code{type = "x"}) or \eqn{(X + A)/2 \pm \eta |X - A|}
+(\code{type = "ave"}). The average intervals have smaller width on
+average, and so are the default. We allow \eqn{X} to either come from
+a normal distribution, a Cauchy, or a uniform. Note that if you use
+\code{family = "uniform"} then these intervals are valid confidence intervals
+for the median/mode for \emph{any} symmetric unimodal density, which
+I think is really amazing.
 }
 \examples{
 ci1(c(1, 2, 10), type = "x")
@@ -25,7 +42,7 @@ ci1(c(1, 2, 10), type = "ave")
 }
 \references{
 \itemize{
-\item{Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. IEEE transactions on information theory, 33(3), 373-382.}
+\item{Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. \emph{IEEE Transactions on Information Theory}, 33(3), 373-382. \doi{10.1109/TIT.1987.1057306}}
 }
 }
 \author{

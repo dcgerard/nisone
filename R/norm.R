@@ -1,4 +1,4 @@
-## Normal distribution
+## Normal distribution n=1 confidence intervals
 
 arcoth <- function(x) {
   0.5 * log((x + 1) / (x - 1))
@@ -8,6 +8,11 @@ arcoth <- function(x) {
 #'
 #' This assumes the random variable X is normal. Intervals are of the form
 #' center +/- width * |X|.
+#'
+#' We use A = 0 for calculations, but the worst
+#' case COV doesn't change if A is non-zero. So you can think of
+#' intervals of the form center +/- width * |X - A| where
+#' center is either X or (X + A)/2.
 #'
 #' @param width The half-width of the interval, in units of |X|.
 #'      This needs to be at least 1 if \code{center = "X"}, or
@@ -84,6 +89,11 @@ wc_alpha <- function(width, center = c("X", "X/2")) {
 #' This assumes X follows a normal distribution. Intervals are of the form
 #' X +/- t|X| or X/2 +/- t|X|.
 #'
+#' We use A = 0 for calculations, but the width doesn't change if A is
+#' non-zero. So you can think of
+#' intervals of the form center +/- width * |X - A| where
+#' center is either X or (X + A)/2.
+#'
 #' @param alpha The exclusion probability. We produce a (1-alpha)100 percent
 #'     confidence interval.
 #' @param center Either X, X/2, or the asymptotic width (approx).
@@ -135,9 +145,10 @@ wc_width <- function(alpha, center = c("X", "X/2", "approx")) {
   return(width)
 }
 
-#' Implied posterior CDF based on n=1 confidence interval
+#' Confidence distribution CDF based on n=1 confidence interval
 #'
-#' This is the CDF of (mu-X) / |X|, which is a pivotal quantity.
+#' This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
+#' confidence distribution, not the posterior.
 #'
 #' @param q The quantile. Only defined for abs(q) >= 1
 #' @param center What is the center of the interval? Either \code{"X"} or
@@ -178,9 +189,10 @@ p_wc <- function(q, center = c("X", "X/2")) {
   return(p)
 }
 
-#' Implied posterior density based on n=1 confidence interval
+#' Confidence density based on n=1 confidence interval
 #'
-#' This is the density of (mu-X) / |X|, which is a pivotal quantity.
+#' This is the implied density of (mu-X) / |X|, which is a pivotal quantity.
+#' This is the confidence distribution, not the posterior.
 #'
 #' @param x The value to evaluate the density. Only defined for abs(q) > 1
 #' @param center What is the center of the interval? Either \code{"X"} or
@@ -222,34 +234,64 @@ d_wc <- function(x, center = c("X", "X/2")) {
 
 #' n=1 confidence interval
 #'
+#' When you have one observation, \eqn{X} from some symmetric distribution
+#' with center \eqn{\mu}, for a pre-specified \eqn{A}, produces
+#' confidence intervals for the center form  \eqn{X \pm \eta |X - A|}
+#' (\code{type = "x"}) or \eqn{(X + A)/2 \pm \eta |X - A|}
+#' (\code{type = "ave"}). The average intervals have smaller width on
+#' average, and so are the default. We allow \eqn{X} to either come from
+#' a normal distribution, a Cauchy, or a uniform. Note that if you use
+#' \code{family = "uniform"} then these intervals are valid confidence intervals
+#' for the median/mode for \emph{any} symmetric unimodal density, which
+#' I think is really amazing.
+#'
 #' @param x A vector of single observations.
-#' @param A Where the CI should be centered
+#' @param A Your "prior knowledge" or "augmented data value".
 #' @param type Either centered at x or the average of x and A
+#' @param family Either the normal distribution, Cauchy, or uniform.
 #' @param level The level of the confidence interval.
 #'
 #' @examples
 #' ci1(c(1, 2, 10), type = "x")
 #' ci1(c(1, 2, 10), type = "ave")
 #'
-#' @references
-#' \itemize{
-#'   \item{Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. IEEE transactions on information theory, 33(3), 373-382.}
-#' }
-#'
 #' @author David Gerard
 #'
+#' @references
+#' \itemize{
+#'  \item{Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. \emph{IEEE Transactions on Information Theory}, 33(3), 373-382. \doi{10.1109/TIT.1987.1057306}}
+#' }
+#'
 #' @export
-ci1 <- function(x, A = 0, type = c("ave", "x"), level = 0.95) {
+ci1 <- function(x, A = 0, type = c("ave", "x"), family = c("normal", "cauchy", "uniform"), level = 0.95) {
   type <- match.arg(type)
+  family <- match.arg(family)
   alpha <- 1 - level
+
   if (type == "x") {
-    width <- wc_width(alpha = alpha, center = "X")
+    if (family == "normal") {
+      width <- wc_width(alpha = alpha, center = "X")
+    } else if (family == "cauchy") {
+      width <- 1 / sin(pi * alpha)
+    } else if (family == "uniform") {
+      width <- 1 / alpha - 1
+    } else {
+      stop("Not a supported family")
+    }
     diff <- abs(x - A)
     lower <- x - width * diff
     upper <- x + width * diff
     center <- x
   } else if (type == "ave") {
-    width <- wc_width(alpha = alpha, center = "X/2")
+    if (family == "normal") {
+      width <- wc_width(alpha = alpha, center = "X/2")
+    } else if (family == "cauchy") {
+      width <- 1 / (2 * tan(pi * alpha / 2))
+    } else if (family == "uniform") {
+      width <- 1 / (2 * alpha) - 0.5 + sqrt(1 / (2 * alpha)^2 - 1 / (2 * alpha))
+    } else {
+      stop("Not a supported family")
+    }
     diff <- abs(x - A)
     lower <- (x + A) / 2 - width * diff
     upper <- (x + A) / 2 + width * diff

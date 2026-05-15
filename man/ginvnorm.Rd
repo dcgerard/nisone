@@ -74,9 +74,14 @@ samp <- rginvnorm(n = 1000, alpha = 4, mu = 0.5, tau = 1)
 x <- seq(min(samp), max(samp), length.out = 500)
 y <- dginvnorm(x = x, alpha = 4, mu = 0.5, tau = 1)
 modes <- xginvnorm(alpha = 4, mu = 0.5, tau = 1)
-graphics::hist(samp, freq = FALSE, breaks = 100, xlab = "x")
-graphics::lines(x, y, col = "red")
-graphics::abline(v = modes, col = "blue", lty = 2)
+graphics::hist(
+  samp,
+  freq = FALSE,
+  breaks = 100,
+  xlab = "x",
+  main = "Generalized Inverse Normal Density")
+graphics::lines(x, y, col = "#E69F00")
+graphics::abline(v = modes, col = "#56B4E9", lty = 2)
 
 }
 \references{

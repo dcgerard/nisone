@@ -72,6 +72,7 @@ test_that("cdf and CI work out", {
 
 
 test_that("wc_width is correct based on Blachman and Machol", {
+  ## Normal ----
   expect_equal(wc_width(alpha = 0.5, center = "X"), 1)
   expect_equal(wc_width(alpha = 0.2, center = "X"), 2.42, tolerance = 1e-2)
   expect_equal(wc_width(alpha = 0.1, center = "X"), 4.84, tolerance = 1e-2)

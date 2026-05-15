@@ -34,6 +34,11 @@
 #'
 #' @name invnorm
 #'
+#' @references
+#' \itemize{
+#'  \item{Robert, C. (1991). Generalized inverse normal distributions. Statistics & Probability Letters, 11(1), 37-41. \doi{10.1016/0167-7152(91)90174-P}}
+#' }
+#'
 #' @author David Gerard
 NULL
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{d_wc}
 \alias{d_wc}
-\title{Implied posterior density based on n=1 confidence interval}
+\title{Confidence density based on n=1 confidence interval}
 \usage{
 d_wc(x, center = c("X", "X/2"))
 }
@@ -13,7 +13,8 @@ d_wc(x, center = c("X", "X/2"))
 \code{"X/2"}.}
 }
 \description{
-This is the density of (mu-X) / |X|, which is a pivotal quantity.
+This is the implied density of (mu-X) / |X|, which is a pivotal quantity.
+This is the confidence distribution, not the posterior.
 }
 \examples{
 xseq <- seq(-10, 10, length.out = 500)

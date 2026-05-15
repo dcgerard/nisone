@@ -35,9 +35,14 @@
 #' x <- seq(min(samp), max(samp), length.out = 500)
 #' y <- dginvnorm(x = x, alpha = 4, mu = 0.5, tau = 1)
 #' modes <- xginvnorm(alpha = 4, mu = 0.5, tau = 1)
-#' graphics::hist(samp, freq = FALSE, breaks = 100, xlab = "x")
-#' graphics::lines(x, y, col = "red")
-#' graphics::abline(v = modes, col = "blue", lty = 2)
+#' graphics::hist(
+#'   samp,
+#'   freq = FALSE,
+#'   breaks = 100,
+#'   xlab = "x",
+#'   main = "Generalized Inverse Normal Density")
+#' graphics::lines(x, y, col = "#E69F00")
+#' graphics::abline(v = modes, col = "#56B4E9", lty = 2)
 #'
 NULL
 
@@ -46,6 +51,9 @@ NULL
 #' @export
 dginvnorm <- function(x, alpha, mu = 0, tau = 1, log = FALSE) {
   stopifnot(alpha > 1, tau > 0)
+  if (alpha == 2) {
+    return(dinvnorm(x = x, imean = mu, isd = tau, log = log))
+  }
 
   lK <- .gin_log_K(alpha = alpha, mu = mu, tau = tau)
 
@@ -237,6 +245,10 @@ pginvnorm_old <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE) {
 qginvnorm <- function(p, alpha, mu = 0, tau = 1) {
   stopifnot(alpha > 1, tau > 0)
 
+  if (alpha == 2) {
+    return(qinvnorm(p = p, imean = mu, isd = tau))
+  }
+
   qvec <- rep(NA_real_, length.out = length(p))
   qvec[p == 0] <- -Inf
   qvec[p == 1] <- Inf
@@ -278,7 +290,10 @@ qginvnorm <- function(p, alpha, mu = 0, tau = 1) {
 #'
 #' @export
 rginvnorm <- function(n, alpha, mu = 0, tau = 1) {
-  qginvnorm(p = stats::runif(n = n), alpha = alpha, mu = mu, tau = tau)
+  if (alpha == 2) {
+    return(rinvnorm(n = n, imean = mu, isd = tau))
+  }
+  return(qginvnorm(p = stats::runif(n = n), alpha = alpha, mu = mu, tau = tau))
 }
 
 #' @describeIn ginvnorm Mean.
