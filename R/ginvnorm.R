@@ -70,6 +70,9 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
   }
 
   # Calculate P(X >= 1 / (tau * q)) where X = 1/(tau * Z) and Z is ginvnorm
+  # f(z|\alpha,\mu,\tau) = K(\alpha,\mu,\tau)|z|^{-\alpha}\exp(-(1/z-\mu)^2/(2\tau))
+  # So, after change of variables
+  # f(x|\alpha,\mu,\tau) = K(\alpha,\mu,\tau)|\tau|^{\alpha-1}|x|^{\alpha-2}\exp(-(x-\mu/\tau)^2/2)
 
   ## Precompute since can be slow for large mu/tau
   lK <- .gin_log_K(alpha = alpha, mu = mu, tau = tau)
@@ -79,7 +82,7 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
     exp(lK + (alpha - 1) * log(abs(tau)) + (alpha - 2) * log(abs(x)) - (x - mu / tau)^2 / 2)
   }
 
-  ## Get modes
+  ## Get modes for distribution of x
   modes <- c(
     (mu/tau - sqrt((mu/tau)^2 + 4 * (alpha - 2))) / 2,
     (mu/tau + sqrt((mu/tau)^2 + 4 * (alpha - 2))) / 2
@@ -87,6 +90,9 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
   modes <- sort(modes)
 
   ## Start at modes, expand out until capture all mass
+  ## The idea is that since we normalized by \tau, \pm 5 should work
+  ##   most of the time, but maybe we need \pm 10 (hand-wave Chebyshev).
+  ##   We expand around modes until we get all of the mass.
   totmass <- 0
   mid <- mean(modes)
   low1 <- modes[[1]] - 3
@@ -116,6 +122,11 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
 
   ## Precompute this one because it is used whenever q >= 0
   if (any(q >= 0)) {
+    ## Scenario: bounds
+    ## (l,u,0) : (l,u)
+    ## (l,0,u) : (l,0)
+    ## (0,l,u) : (0,0)
+    ## so bounds of integration are min(l,0) to min(0,u)
     negval <- stats::integrate(f, lower = min(low1, 0), upper = min(up1, 0), subdivisions = subdivisions)$value +
       stats::integrate(f, lower = min(low2, 0), upper = min(up2, 0), subdivisions = subdivisions)$value
   }
@@ -133,12 +144,25 @@ pginvnorm <- function(q, alpha, mu = 0, tau = 1, lower.tail = TRUE, subdivisions
       lpvec[[i]] <- negval
     } else if (q[[i]] > 0) {
       # If q > 0, then integral is from -Inf to 0 and from 1/(tau * q) to Inf
+      ## Scenario: bounds (a = 1/(tau * q))
+      ## (l,u,a) : (a,a)
+      ## (l,a,u) : (a,u)
+      ## (a,l,u) : (l,u)
+      ## so bounds of integration are max(l,a) to max(u,a)
       tq_bound <- 1 / (tau * q[[i]])
       lpvec[[i]] <- negval +
         stats::integrate(f = f, lower = max(low1, tq_bound), upper = max(up1, tq_bound), subdivisions = subdivisions)$value +
         stats::integrate(f = f, lower = max(low2, tq_bound), upper = max(up2, tq_bound), subdivisions = subdivisions)$value
     } else {
       # If q < 0, then integral is from 1/(tau * q) to 0
+      ## Scenario  : bounds (a = 1/(tau * q))
+      ## (l,u,a,0) : skipped
+      ## (l,a,u,0) : (a,u)
+      ## (l,a,0,u) : (a,0)
+      ## (a,l,u,0) : (l,u)
+      ## (a,l,0,u) : (l,0)
+      ## (a,0,l,u) : skipped
+      ## so bounds of integration are max(l,a) to min(u,0)
       tq_bound <- 1 / (tau * q[[i]])
       lpvec[[i]] <- 0
       if (!(up1 < tq_bound || 0 < low1)) {
