@@ -4,13 +4,13 @@
 \alias{d_wc}
 \title{Confidence density based on n=1 confidence interval}
 \usage{
-d_wc(x, center = c("X", "X/2"))
+d_wc(x, center = c("X", "ave"))
 }
 \arguments{
 \item{x}{The value to evaluate the density. Only defined for abs(q) > 1}
 
 \item{center}{What is the center of the interval? Either \code{"X"} or
-\code{"X/2"}.}
+\code{"X/2"} (\code{"ave"}).}
 }
 \description{
 This is the implied density of (mu-X) / |X|, which is a pivotal quantity.
@@ -21,7 +21,7 @@ xseq <- seq(-10, 10, length.out = 500)
 dseq <- d_wc(xseq)
 plot(xseq, dseq, type = "l")
 
-dseq <- d_wc(xseq, center = "X/2")
+dseq <- d_wc(xseq, center = "ave")
 plot(xseq, dseq, type = "l")
 
 }

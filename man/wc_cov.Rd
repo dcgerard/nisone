@@ -4,15 +4,15 @@
 \alias{wc_cov}
 \title{Worst-case coefficient of variation}
 \usage{
-wc_cov(width, center = c("X", "X/2"))
+wc_cov(width, center = c("X", "ave"))
 }
 \arguments{
 \item{width}{The half-width of the interval, in units of |X|.
 This needs to be at least 1 if \code{center = "X"}, or
-at least 0.5 if \code{center = "X/2"}.}
+at least 0.5 if \code{center = "ave"}.}
 
 \item{center}{What is the center of the interval? Either \code{"X"} or
-\code{"X/2"}.}
+\code{"ave"}.}
 }
 \description{
 This assumes the random variable X is normal. Intervals are of the form
@@ -26,7 +26,7 @@ center is either X or (X + A)/2.
 }
 \examples{
 wc_cov(width = 2, center = "X")
-wc_cov(width = 2, center = "X/2")
+wc_cov(width = 2, center = "ave")
 
 }
 \author{

@@ -56,6 +56,12 @@ ci1(x = 2, A = 1, type = "ave", family = "normal")
 ci1(x = 2, A = 1, type = "ave", family = "uniform")
 ```
 
+If you are interested, you can get the values of $\eta$ for the normal, Cauchy, and uniform via `wc_width()`. E.g., for a normal distribution 95\% confidence interval of the form $(X + A)/2 \pm \eta|X-A|$, the value of $\eta$ is
+```{r}
+wc_width(alpha = 0.05, center = "ave", family = "normal")
+```
+
+
 # $n=1$ Bayesian Intervals
 
 In Gerard (2026), we showed that using the following prior produces posterior credible intervals that are asymptotically valid confidence intervals.

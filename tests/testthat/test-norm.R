@@ -5,11 +5,11 @@ test_that("get same alpha as Blachman and Machol", {
   expect_equal(wc_alpha(width = 9.68, center = "X"), 0.05, tolerance = 1e-3)
   expect_equal(wc_alpha(width = 48.39, center = "X"), 0.01, tolerance = 1e-3)
 
-  expect_equal(wc_alpha(width = 0.5, center = "X/2"), 0.5)
-  expect_equal(wc_alpha(width = 2.31, center = "X/2"), 0.2, tolerance = 1e-3)
-  expect_equal(wc_alpha(width = 4.79, center = "X/2"), 0.1, tolerance = 1e-3)
-  expect_equal(wc_alpha(width = 9.65, center = "X/2"), 0.05, tolerance = 1e-3)
-  expect_equal(wc_alpha(width = 48.39, center = "X/2"), 0.01, tolerance = 1e-3)
+  expect_equal(wc_alpha(width = 0.5, center = "ave"), 0.5)
+  expect_equal(wc_alpha(width = 2.31, center = "ave"), 0.2, tolerance = 1e-3)
+  expect_equal(wc_alpha(width = 4.79, center = "ave"), 0.1, tolerance = 1e-3)
+  expect_equal(wc_alpha(width = 9.65, center = "ave"), 0.05, tolerance = 1e-3)
+  expect_equal(wc_alpha(width = 48.39, center = "ave"), 0.01, tolerance = 1e-3)
 })
 
 
@@ -27,12 +27,12 @@ test_that("Simulations at actual confidence level", {
   upper <- x + width * abs(x)
   expect_equal(mean(lower <= mu & mu <= upper), level, tolerance = 1e-2)
 
-  # X/2 center
+  # ave center
   n <- 100000
   mu <- 100
   width <- 2.31
-  level <- 1 - wc_alpha(width = width, center = "X/2")
-  lambda <- wc_cov(width = width, center = "X/2")
+  level <- 1 - wc_alpha(width = width, center = "ave")
+  lambda <- wc_cov(width = width, center = "ave")
   sigma <- mu / lambda
   x <- stats::rnorm(n = n, mean = mu, sd = sigma)
   lower <- x/2 - width * abs(x)
@@ -52,13 +52,13 @@ test_that("cdf and density are part of same family", {
   expect_equal(val1[[1]], val2)
 
   x <- -3
-  val1 <- stats::integrate(d_wc, lower = -Inf, upper = x, center = "X/2")
-  val2 <- p_wc(q = x, center = "X/2")
+  val1 <- stats::integrate(d_wc, lower = -Inf, upper = x, center = "ave")
+  val2 <- p_wc(q = x, center = "ave")
   expect_equal(val1[[1]], val2)
 
   x <- 1.8
-  val1 <- stats::integrate(d_wc, lower = x, upper = Inf, center = "X/2")
-  val2 <- 1 - p_wc(q = x, center = "X/2")
+  val1 <- stats::integrate(d_wc, lower = x, upper = Inf, center = "ave")
+  val2 <- 1 - p_wc(q = x, center = "ave")
   expect_equal(val1[[1]], val2)
 })
 
@@ -66,8 +66,8 @@ test_that("cdf and CI work out", {
   expect_equal(p_wc(q = -2) * 2, wc_alpha(width = 2))
   expect_equal((1 - p_wc(q = 2)) * 2, wc_alpha(width = 2))
 
-  expect_equal(p_wc(q = -2, center = "X/2") * 2, wc_alpha(width = 2, center = "X/2"))
-  expect_equal((1 - p_wc(q = 2, center = "X/2")) * 2, wc_alpha(width = 2, center = "X/2"))
+  expect_equal(p_wc(q = -2, center = "ave") * 2, wc_alpha(width = 2, center = "ave"))
+  expect_equal((1 - p_wc(q = 2, center = "ave")) * 2, wc_alpha(width = 2, center = "ave"))
 })
 
 
@@ -77,11 +77,39 @@ test_that("wc_width is correct based on Blachman and Machol", {
   expect_equal(wc_width(alpha = 0.2, center = "X"), 2.42, tolerance = 1e-2)
   expect_equal(wc_width(alpha = 0.1, center = "X"), 4.84, tolerance = 1e-2)
   expect_equal(wc_width(alpha = 0.05, center = "X"), 9.68, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "X"), 48.39, tolerance = 1e-2)
 
-  expect_equal(wc_width(alpha = 0.5, center = "X/2"), 0.5)
-  expect_equal(wc_width(alpha = 0.2, center = "X/2"), 2.31, tolerance = 1e-2)
-  expect_equal(wc_width(alpha = 0.1, center = "X/2"), 4.79, tolerance = 1e-2)
-  expect_equal(wc_width(alpha = 0.05, center = "X/2"), 9.65, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.5, center = "ave"), 0.5)
+  expect_equal(wc_width(alpha = 0.2, center = "ave"), 2.31, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "ave"), 4.79, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "ave"), 9.65, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "ave"), 48.39, tolerance = 1e-2)
+
+  ## Cauchy ----
+  expect_equal(wc_width(alpha = 0.5, center = "X", family = "cauchy"), 1)
+  expect_equal(wc_width(alpha = 0.2, center = "X", family = "cauchy"), 1.70, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "X", family = "cauchy"), 3.24, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "X", family = "cauchy"), 6.39, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "X", family = "cauchy"), 31.84, tolerance = 1e-2)
+
+  expect_equal(wc_width(alpha = 0.5, center = "ave", family = "cauchy"), 0.5)
+  expect_equal(wc_width(alpha = 0.2, center = "ave", family = "cauchy"), 1.54, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "ave", family = "cauchy"), 3.16, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "ave", family = "cauchy"), 6.35, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "ave", family = "cauchy"), 31.83, tolerance = 1e-2)
+
+  ## Uniform ----
+  expect_equal(wc_width(alpha = 0.5, center = "X", family = "uniform"), 1)
+  expect_equal(wc_width(alpha = 0.2, center = "X", family = "uniform"), 4, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "X", family = "uniform"), 9, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "X", family = "uniform"), 19, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "X", family = "uniform"), 99, tolerance = 1e-2)
+
+  expect_equal(wc_width(alpha = 0.5, center = "ave", family = "uniform"), 0.5)
+  expect_equal(wc_width(alpha = 0.2, center = "ave", family = "uniform"), 3.94, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.1, center = "ave", family = "uniform"), 8.97, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.05, center = "ave", family = "uniform"), 18.99, tolerance = 1e-2)
+  expect_equal(wc_width(alpha = 0.01, center = "ave", family = "uniform"), 99, tolerance = 1e-2)
 })
 
 test_that("Bayes is about same as regular for small alpha",{

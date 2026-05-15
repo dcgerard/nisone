@@ -4,34 +4,37 @@
 \alias{wc_width}
 \title{Given confidence level, provide half-width of CI}
 \usage{
-wc_width(alpha, center = c("X", "X/2", "approx"))
+wc_width(
+  alpha,
+  center = c("X", "ave", "approx"),
+  family = c("normal", "cauchy", "uniform")
+)
 }
 \arguments{
-\item{alpha}{The exclusion probability. We produce a (1-alpha)100 percent
+\item{alpha}{The confidence error probability. We produce a (1-alpha)100 percent
 confidence interval.}
 
-\item{center}{Either X, X/2, or the asymptotic width (approx).}
+\item{center}{Either X, ave, or the asymptotic width (approx).}
+
+\item{family}{Either the normal, Cauchy, or uniform distribution.}
 }
 \value{
-Returns half-width of worst-case confidence interval in units of |X|.
+Returns half-width of worst-case confidence interval in units of |X - A|.
 }
 \description{
-This assumes X follows a normal distribution. Intervals are of the form
-X +/- t|X| or X/2 +/- t|X|.
-}
-\details{
-We use A = 0 for calculations, but the width doesn't change if A is
-non-zero. So you can think of
-intervals of the form center +/- width * |X - A| where
-center is either X or (X + A)/2.
+\eqn{(1-\alpha)100\%}
+confidence intervals are of the form
+\eqn{X \pm \eta|X-A|} or \eqn{(X + A)/2 \pm \eta|X-A|}. You give \eqn{\alpha}
+and this function will provide \eqn{\eta} if X follows a Cauchy,
+normal, or uniform distribution.
 }
 \examples{
 wc_width(alpha = 0.2, center = "X")
-wc_width(alpha = 0.2, center = "X/2")
+wc_width(alpha = 0.2, center = "ave")
 wc_width(alpha = 0.2, center = "approx")
 
 wc_width(alpha = 0.05, center = "X")
-wc_width(alpha = 0.05, center = "X/2")
+wc_width(alpha = 0.05, center = "ave")
 wc_width(alpha = 0.05, center = "approx")
 
 }

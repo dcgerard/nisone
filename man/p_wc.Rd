@@ -4,13 +4,13 @@
 \alias{p_wc}
 \title{Confidence distribution CDF based on n=1 confidence interval}
 \usage{
-p_wc(q, center = c("X", "X/2"))
+p_wc(q, center = c("X", "ave"))
 }
 \arguments{
 \item{q}{The quantile. Only defined for abs(q) >= 1}
 
 \item{center}{What is the center of the interval? Either \code{"X"} or
-\code{"X/2"}.}
+\code{X/2}, (\code{"ave"}).}
 }
 \description{
 This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
