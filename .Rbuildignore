@@ -4,3 +4,5 @@
 ^data-raw$
 ^\.positai$
 ^\.claude$
+^README\.Rmd$
+^\.github$
