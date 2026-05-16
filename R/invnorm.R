@@ -60,6 +60,14 @@ pinvnorm <- function(q, imean = 0, isd = 1, lower.tail = TRUE, log.p = FALSE) {
   pvec <- stats::pnorm((imean * q - 1) / (isd * q)) - stats::pnorm(imean / isd)
   pvec[q > 0] <- pvec[q > 0] + 1
   pvec[q == 0] <- 1 - stats::pnorm(imean / isd)
+
+  if (!lower.tail) {
+    pvec <- 1 - pvec
+  }
+  if (log.p) {
+    pvec <- log(pvec)
+  }
+
   return(pvec)
 }
 
