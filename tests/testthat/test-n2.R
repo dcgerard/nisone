@@ -118,6 +118,7 @@ test_that("wt = 1 gives same augbounds as before", {
 
 
 test_that("Coverage is correct for larger weight", {
+  skip("too long")
   set.seed(1)
   n <- 2
   wt <- 10

@@ -4,6 +4,8 @@
 \alias{idist}
 \alias{didist}
 \alias{pidist}
+\alias{qidist}
+\alias{ridist}
 \title{General inverse distribution}
 \usage{
 didist(
@@ -24,6 +26,25 @@ pidist(
   pdist = NULL,
   lower.tail = TRUE,
   log.p = FALSE,
+  ...
+)
+
+qidist(
+  p,
+  center = 0,
+  scale = 1,
+  fam = c("normal", "cauchy", "uniform"),
+  qdist = NULL,
+  pdist = NULL,
+  ...
+)
+
+ridist(
+  n,
+  center = 0,
+  scale = 1,
+  fam = c("normal", "cauchy", "uniform"),
+  rdist = NULL,
   ...
 )
 }
@@ -52,9 +73,9 @@ otherwise, P(X>x).}
 
 \item{p}{vector of probabilities}
 
-\item{n}{sample size}
-
 \item{qdist}{Quantile function of standard distribution.}
+
+\item{n}{sample size}
 
 \item{rdist}{Random generation of standard distribution.}
 }
@@ -76,7 +97,11 @@ arguments for the normal, Cauchy, and uniform are provided.
 \itemize{
 \item \code{didist()}: Density function.
 
-\item \code{pidist()}: Distribution function
+\item \code{pidist()}: Distribution function.
+
+\item \code{qidist()}: Quantile function.
+
+\item \code{ridist()}: Random generation.
 
 }}
 \examples{
@@ -85,6 +110,9 @@ didist(1, center = 3, scale = 2, ddist = dt, df = 1)
 
 pidist(1, fam = "normal")
 pidist(1, center = 3, scale = 2, pdist = pt, df = 1)
+
+qidist(0.1, fam = "normal")
+qidist(0.1, center = 3, scale = 2, qdist = qt, pdist = pt, df = 1)
 
 }
 \author{
