@@ -186,5 +186,5 @@ ridist <- function(n, center = 0, scale = 1, fam = c("normal", "cauchy", "unifor
     }
   }
 
-  return(1 / rdist(n = n))
+  return(1 / (rfun(n = n) * scale + center))
 }
