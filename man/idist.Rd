@@ -55,7 +55,7 @@ ridist(
 
 \item{scale}{The scale parameter \eqn{\sigma}.}
 
-\item{fam}{One of "normal", "cauchy", or "uniform". If
+\item{fam}{One of \code{"normal"}, \code{"cauchy"}, or \code{"uniform"}. If
 \code{ddist}, \code{pdist}, \code{qdist}, or \code{rdist} are specified
 then this argument is ignored.}
 

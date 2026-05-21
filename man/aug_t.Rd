@@ -16,7 +16,7 @@ aug_t(x, A = 0, level = 0.95, wt = 1)
 \item{wt}{Weight for A. Don't touch this unless you know what you are doing.}
 }
 \description{
-Caculates a t-interval using augmented data \code{c(x,A)}. The multiplier
+Calculates a t-interval using augmented data \code{c(x,A)}. The multiplier
 of this interval bounds the level above \code{level}, so these intervals
 are typically conservative. This method is very fast for \code{n <= 100}
 and \code{level \%in\% c(0.8, 0.9, 0.95, 0.99)} because I saved those

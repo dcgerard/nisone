@@ -15,7 +15,7 @@
 #' @param log,log.p logical; if \code{TRUE}, probabilities p are given as log(p).
 #' @param lower.tail logical; if \code{TRUE} (default), probabilities are P(X<=x)
 #'     otherwise, P(X>x).
-#' @param fam One of "normal", "cauchy", or "uniform". If
+#' @param fam One of \code{"normal"}, \code{"cauchy"}, or \code{"uniform"}. If
 #'     \code{ddist}, \code{pdist}, \code{qdist}, or \code{rdist} are specified
 #'     then this argument is ignored.
 #' @param ddist Density function of standard distribution \eqn{\rho()}. Should have a `log` argument.

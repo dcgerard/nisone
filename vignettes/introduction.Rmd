@@ -68,7 +68,7 @@ wc_width(alpha = 0.05, center = "ave", family = "normal")
 
 # $n=1$ Bayesian Intervals
 
-In Gerard (2026), we showed that using the following prior produces posterior credible intervals that are asymptotically valid confidence intervals.
+In Gerard (2026), we showed that (for $n=1$) using the following prior produces posterior credible intervals that are asymptotically valid confidence intervals.
 $$
 \pi(\mu,\nu) = |\mu - A|^{-1}\delta_{\nu^*}(\nu), \text{ where}\\
 \nu = (\mu - A) / \sigma,\\
