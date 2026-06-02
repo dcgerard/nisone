@@ -7,6 +7,8 @@
 
 [![R-CMD-check](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/dcgerard/nisone/graph/badge.svg?token=1PQ0SVRKKR)](https://codecov.io/gh/dcgerard/nisone)
+[![License: GPL
+v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 <!-- badges: end -->
 
 Provides different interval estimates of a location parameter when the
@@ -38,6 +40,37 @@ ci1(x = 10, A = 5)
 #>       x center  lower upper
 #> [1,] 10    7.5 -40.76 55.76
 ```
+
+Its full posterior distribution based on a probability matching prior
+can be calculated using the `n1post` family of functions. For example,
+the median and 95% credible interval is
+
+``` r
+qn1post(p = c(0.025, 0.5, 0.975), A = 5, obs = 10, nu = 1, fam = "normal")
+#> [1] -40.755   8.549  55.773
+```
+
+Some random posterior draws and density curve is
+
+``` r
+samp <- rn1post(n = 10000, A = 5, obs = 10, nu = 1, fam = "normal")
+samp <- samp[samp > -20 & samp < 40]
+x <- seq(-20, 40, length.out = 500)
+y <- dn1post(x = x, A = 5, obs = 10, nu = 1, fam = "normal")
+graphics::hist(
+  samp, 
+  freq = FALSE, 
+  breaks = 200, 
+  border = "grey", 
+  col = "grey",
+  main = "Posterior Density and Histogram",
+  xlab = "Mean",
+  ylab = "Posterior Density"
+)
+graphics::lines(x, y, type = "l", col = "#E69F00")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 If we just want to assume that $X$ comes from *any* symmetric unimodal
 distribution, a 95% CI for the mode is
