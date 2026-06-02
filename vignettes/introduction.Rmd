@@ -28,6 +28,7 @@ This document introduces the main functions in the `{nisone}` R package. The mos
 - `blevel()`: The true confidence level of the credible interval from `bci1()`.
 - `bcin()`: Bayesian interval for $n\geq 2$ assuming the coefficient of variation is exactly 1.
 - `bft()`: Bayes factor given a $t$-statistic.
+- `dn1post()`, `pn1post()`, `qn1post()`, `rn1post()`, `nun1post()`: The posterior distribution of the location parameter using the $n=1$ priors.
 - `dinvnorm()`, `pinvnorm()`, `qinvnorm()`, `rinvnorm()`: The inverse normal distribution.
 - `dginvnorm()`, `pginvnorm()`, `qginvnorm()`, `rginvnorm()`: The generalized inverse normal distribution.
 
@@ -138,27 +139,37 @@ f(x|\alpha,\mu,\tau) = K(\alpha,\mu,\tau)|x|^{-\alpha}\exp\left\{-\frac{1}{2\tau
 $$
 where $K(\alpha,\mu,\tau)$ is the proportionality constant. When $\alpha = 2$, this corresponds to the inverse normal distribution (different from the inverse Gaussian distribution), where $\frac{1}{X} \sim N(\mu, \tau^2)$. The generalized inverse normal distribution shows up in Bayesian analysis when you parameterize the normal distribution in terms of its mean $\mu$ and its coefficient of variation $\nu = \mu / \tau$.
 
-The `nisone()` R package contains density, distribution, quantile, and random generation functions for the (generalized) inverse normal distribution. You can use this to get the full posterior distribution for $n=1$ intervals when $\rho()$ is normal. In the normal case, the marginal posterior of $\mu - A$ is inverse normal with inverse mean $\frac{1}{X - A}$ and inverse variance $\frac{1}{(X - A)^2}$. E.g., if we observed $X = 2$ and use $A = 1$, the full posterior density is
+The `nisone()` R package contains density, distribution, quantile, and random generation functions for the (generalized) inverse normal distribution. You can use this to get the full posterior distribution for $n=1$ intervals when $\rho()$ is normal. In the normal case, the marginal posterior of $\mu - A$ is inverse normal with inverse mean $\frac{1}{X - A}$ and inverse variance $\frac{1}{(X - A)^2}$. E.g., if we observed $X = 2$ and use $A = 0.75$, the full posterior density is
 ```{r}
 museq <- seq(-2, 5, length.out = 500)
 X <- 2
-A <- 1
-density <- dinvnorm(x = museq - A, imean = 1 / (X - A), isd = 1 / (X - A)^2)
-plot(
+A <- 0.75
+density <- dinvnorm(x = museq - A, imean = 1 / (X - A), isd = 1 / abs(X - A))
+graphics::plot(
   museq, 
   density,
   type = "l",
   xlab = expression(mu),
-  ylab = "Posterior Density")
+  ylab = "Posterior Density"
+)
 ```
 
 You can get 95\% Credible intervals via
 ```{r}
-qinvnorm(p = c(0.025, 0.975), imean = 1 / (X - A), isd = 1 / (X - A)^2) + A
+qinvnorm(p = c(0.025, 0.975), imean = 1 / (X - A), isd = 1 / abs(X - A)) + A
 ```
 Which agree with `bci1()`
 ```{r}
-bci1(x = 2, A = 1)
+bci1(x = X, A = A)
+```
+
+Interfacing with the posterior is provided by the `n1post` functions so that you don't need to manually calculate the posterior above.
+```{r}
+dn1post(x = 10, obs = X, A = A, nu = 1, fam = "normal")
+dinvnorm(x = 10 - A, imean = 1 / (X - A), isd = 1 / abs(X - A))
+
+qn1post(p = c(0.025, 0.975), A = A, obs = X, nu = 1, fam = "normal")
+qinvnorm(p = c(0.025, 0.975), imean = 1 / (X - A), isd = 1 / abs(X - A)) + A
 ```
 
 More generally, we have functions for the generalized inverse normal.
@@ -181,7 +192,6 @@ hist(
 lines(x, y, col = "#E69F00")
 abline(v = modes, col = "#56B4E9", lty = 2)
 ```
-
 
 # References
 

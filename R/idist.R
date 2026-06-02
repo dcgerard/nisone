@@ -120,6 +120,11 @@ pidist <- function(q, center = 0, scale = 1, fam = c("normal", "cauchy", "unifor
 #'
 #' @export
 qidist <- function(p, center = 0, scale = 1, fam = c("normal", "cauchy", "uniform"), qdist = NULL, pdist = NULL, ...) {
+
+  if (xor(is.null(pdist), is.null(qdist))) {
+    stop("Either both pdist and qdist need to be specified, or both need to be NULL")
+  }
+
   if (is.null(qdist) || is.null(pdist)) {
     if (length(fam) > 1) {
       message("Using fam = 'normal'")
