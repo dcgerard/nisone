@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/dcgerard/nisone/graph/badge.svg)](https://app.codecov.io/gh/dcgerard/nisone)
+[![codecov](https://codecov.io/gh/dcgerard/nisone/graph/badge.svg?token=1PQ0SVRKKR)](https://codecov.io/gh/dcgerard/nisone)
 <!-- badges: end -->
 
 Provides different interval estimates of a location parameter when the sample size is one or more. These include classical methods when n=1, new Bayesian analogues of these classical methods, and extensions of these methods to larger sample sizes in the normal case. Other functions calculate Bayes factors based on t-statistics, and implement the (generalized) inverse normal distribution (and other inverse distributions). See Gerard (2026) for details of these methods.

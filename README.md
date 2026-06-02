@@ -6,8 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dcgerard/nisone/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/dcgerard/nisone/graph/badge.svg)](https://app.codecov.io/gh/dcgerard/nisone)
+[![codecov](https://codecov.io/gh/dcgerard/nisone/graph/badge.svg?token=1PQ0SVRKKR)](https://codecov.io/gh/dcgerard/nisone)
 <!-- badges: end -->
 
 Provides different interval estimates of a location parameter when the
