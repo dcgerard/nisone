@@ -4,17 +4,29 @@
 \alias{bcin}
 \title{Bayesian credible interval when n >= 1}
 \usage{
-bcin(x, A = 0, level = 0.95)
+bcin(x, A = 0, nu = 1, level = 0.95)
 }
 \arguments{
 \item{x}{a double}
 
 \item{A}{The prior center.}
 
+\item{nu}{The fixed value of nu.}
+
 \item{level}{The level of the credible interval}
 }
+\value{
+The credible interval of the provided level.
+}
 \description{
-Bayesian credible interval when n >= 1
+Let \eqn{X_i \sim N(\mu, \sigma^2)}. Let \eqn{Y_i = X_i - A},
+\eqn{\beta = \mu - A}, and \eqn{\nu = |\mu - A|/\sigma}. Then,
+for a fixed value of \eqn{\nu}, this comes up with a \eqn{(1-\alpha)100\%}
+posterior credible interval of \eqn{\mu} where the prior is
+\eqn{\pi(\beta) = |\beta|^{-1}} or \eqn{\pi(\mu) = |\mu - A|^{-1}}.
+The full posterior distribution is generalized inverse normal (implemented
+by \code{\link{ginvnorm}}) with shape parameter \eqn{n + 1}, inverse mean of
+\code{sum(y) / sum(y^2)}, and inverse variance \code{1 / (nu^2 * sum(y^2))}.
 }
 \author{
 David Gerard
