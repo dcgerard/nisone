@@ -26,9 +26,9 @@ This document introduces the main functions in the `{nisone}` R package. The mos
 - `aug_t()`: Augmented $t$-interval, the generalization of `ci1()` for $n\geq 2$.
 - `bci1()`: Bayesian version of `ci1()`.
 - `blevel()`: The true confidence level of the credible interval from `bci1()`.
-- `bcin()`: Bayesian interval for $n\geq 2$ assuming the coefficient of variation is exactly 1.
+- `bcin()`: Bayesian interval for $n\geq 2$ assuming the coefficient of variation is known.
 - `bft()`: Bayes factor given a $t$-statistic.
-- `dn1post()`, `pn1post()`, `qn1post()`, `rn1post()`, `nun1post()`: The posterior distribution of the location parameter using the $n=1$ priors.
+- `dn1post()`, `pn1post()`, `qn1post()`, `rn1post()`, `nun1post()`: The marginal posterior distribution of the location parameter using the $n=1$ priors.
 - `dinvnorm()`, `pinvnorm()`, `qinvnorm()`, `rinvnorm()`: The inverse normal distribution.
 - `dginvnorm()`, `pginvnorm()`, `qginvnorm()`, `rginvnorm()`: The generalized inverse normal distribution.
 
@@ -46,7 +46,7 @@ $$
 $$
 can be constructed to produce valid $(1 - \alpha)100\%$ confidence intervals. This is done by making $\eta$ large enough to bound the coverage probability below by $(1 - \alpha)$. See Blachman and Machol (1987).
 
-The function `ci1()` produces these confidence intervals where $\rho()$ is (i) the standard normal function, (ii) Cauchy, and (iii) uniform. Surprisingly, constructing intervals using a uniform distribution makes them valid $(1 - \alpha)100\%$ confidence intervals when $X$ has *any* unimodal density.
+The function `ci1()` produces these confidence intervals where $\rho()$ is the density of the (i) standard normal, (ii) Cauchy, and (iii) uniform. Surprisingly, constructing intervals using a uniform distribution makes them valid $(1 - \alpha)100\%$ confidence intervals when $X$ has *any* unimodal density.
 
 Suppose we observe $X = 2$ and we use $A = 1$, then, centered at $X$, the various 95\% intervals are:
 ```{r}
@@ -103,7 +103,7 @@ $$
 $$
 where $\eta$ is chosen to control the error probability. We call these "augmented $t$-interval". The function that calculates them is `aug_t()`.
 
-If $A$ is close to $\mu$, the augmented $t$-intervals tend to be smaller on average. For $n=2$, you only need $A$ to be within about 4 standard deviations of $\mu$ to see large improvements.
+If $A$ is close to $\mu$, the augmented $t$-intervals tend to be smaller than the Student $t$-intervals on average. For $n=2$, you only need $A$ to be within about 4 standard deviations of $\mu$ to see large improvements.
 ```{r}
 n <- 2
 mu <- 10
@@ -115,7 +115,7 @@ t.test(x)$conf.int
 ```
 
 
-An augmented $t$-interval can be viewed as an inverted frequentist test that uses a Bayes factor as a frequentest test statistic. Gronau and Wagenmakers (2020) studied the connection between Bayes factors and *t*-statistics. Let $\delta$ be the standardized effect size, let $\sigma^2$ be the variance (assumed equal in two-sample case). In the one-sample case, $\delta = \frac{\mu - \mu_0}{\sigma}$, where $\mu_0$ is the null value. In the two-sample case, $\delta = \frac{\mu_1 - \mu_2}{\sigma}$, where $\mu_1$ and $\mu_2$ are the means of the two-samples. We place the prior $1/\sigma^2$ under the null and $\pi(\delta)/\sigma^2$ under the alternative, for some arbitrary density $\pi(\cdot)$. Given this setting, the Bayes factor is a function of the $t$-statistic. 
+An augmented $t$-interval can be viewed as an inverted frequentist test that uses a Bayes factor as a frequentest test statistic. Gronau and Wagenmakers (2020) studied the connection between Bayes factors and *t*-statistics. Let $\delta$ be the standardized effect size, let $\sigma^2$ be the variance (assumed equal in two-sample case). In the one-sample case, $\delta = \frac{\mu - \mu_0}{\sigma}$, where $\mu_0$ is the null value. In the two-sample case, $\delta = \frac{\mu_1 - \mu_2}{\sigma}$, where $\mu_1$ and $\mu_2$ are the means of the two-samples. We place the prior $1/\sigma^2$ under the null and $\pi(\delta)/\sigma^2$ under the alternative, for some prior density $\pi(\cdot)$. Given this setting, the Bayes factor is a function of the $t$-statistic. 
 $$
 \mathrm{BF} = \frac{\int_{\delta}T_{\nu}(t|\sqrt{n_\delta}\delta)\pi(\delta)\mathrm{d}\delta}{T_{\nu}(t)},
 $$
