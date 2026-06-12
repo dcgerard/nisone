@@ -1,10 +1,22 @@
 #' Bayesian credible interval when n=1
 #'
+#' Suppose \eqn{X \sim N(\mu, \sigma^2)}. This gives you credible intervals
+#' of a specified level when we use prior \eqn{\sigma = |\mu|} with probability
+#' 1, and \eqn{\pi(\mu) = |\mu - A|^{-1}}. See the [n1post()] for
+#' access to the full posterior distribution.
+#'
 #' @param x a double
 #' @param A The prior center.
 #' @param level The level of the credible interval
 #'
 #' @author David Gerard
+#'
+#' @returns The credible interval of the specified level.
+#'
+#' @seealso [n1post()]: Functions to access the full posterior distribution.
+#'
+#' @examples
+#' bci1(x = 1, A = 0)
 #'
 #' @export
 bci1 <- function(x, A = 0, level = 0.95) {
@@ -29,9 +41,15 @@ bci1 <- function(x, A = 0, level = 0.95) {
 #' @param level The credible interval level.
 #' @param nu (mu - A)/sigma
 #'
-#' @return The true level of the (1-alpha) credible interval.
+#' @returns The true level of the (1-alpha) credible interval.
 #'
 #' @author David Gerard
+#'
+#' @examples
+#' blevel(0.95, 0.5)
+#' blevel(0.95, 1)
+#' blevel(0.95, 1.5)
+#'
 #'
 #' @export
 blevel <- function(level, nu) {
@@ -65,9 +83,17 @@ blevel <- function(level, nu) {
 #' @param nu The fixed value of nu.
 #' @param level The level of the credible interval
 #'
-#' @return The credible interval of the provided level.
+#' @returns The credible interval of the provided level.
+#'
+#' @seealso [ginvnorm()]: The generalized inverse normal distribution.
 #'
 #' @author David Gerard
+#'
+#' @examples
+#' set.seed(1)
+#' x <- stats::rnorm(4, mean = 1, sd = 1)
+#' bcin(x = x, A = 3)
+#'
 #'
 #' @export
 bcin <- function(x, A = 0, nu = 1, level = 0.95) {
@@ -109,7 +135,7 @@ bcin <- function(x, A = 0, nu = 1, level = 0.95) {
 #' @param mu inverse mean
 #' @param tau inverse sd
 #'
-#' @return The approximation for Pr(X >= q) when X ~ Ginvnorm(alpha, mu, tau).
+#' @returns The approximation for Pr(X >= q) when X ~ Ginvnorm(alpha, mu, tau).
 #' Should be accurate for large q.
 #'
 #' @author David Gerard
@@ -122,6 +148,3 @@ ginv_tail <- function(q, alpha, mu, tau, log = FALSE) {
   }
   return(ret)
 }
-
-
-

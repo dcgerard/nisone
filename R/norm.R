@@ -22,6 +22,8 @@ arcoth <- function(x) {
 #'
 #' @author David Gerard
 #'
+#' @returns Worst case coefficient of variation \eqn{\nu = |X - A|/\sigma}.
+#'
 #' @examples
 #' wc_cov(width = 2, center = "X")
 #' wc_cov(width = 2, center = "ave")
@@ -53,7 +55,7 @@ wc_cov <- function(width, center = c("X", "ave")) {
 #'
 #' @inheritParams wc_cov
 #'
-#' @return The worst case probability (a priori) that a confidence interval
+#' @returns The worst case probability (a priori) that a confidence interval
 #'      of half-width \code{width} will not capture the mean.
 #'
 #' @examples
@@ -97,7 +99,7 @@ wc_alpha <- function(width, center = c("X", "ave")) {
 #' @param center Either X, ave, or the asymptotic width (approx).
 #' @param family Either the normal, Cauchy, or uniform distribution.
 #'
-#' @return Returns half-width of worst-case confidence interval in units of |X - A|.
+#' @returns Returns half-width of worst-case confidence interval in units of |X - A|.
 #'
 #' @examples
 #' wc_width(alpha = 0.2, center = "X")
@@ -174,6 +176,8 @@ wc_width <- function(alpha, center = c("X", "ave", "approx"), family = c("normal
 #'
 #' @author David Gerard
 #'
+#' @returns n=1 confidence distribution CDF.
+#'
 #' @examples
 #' qseq <- seq(-10, 10, length.out = 100)
 #' pseq <- p_wc(qseq)
@@ -217,6 +221,8 @@ p_wc <- function(q, center = c("X", "ave")) {
 #'     \code{"X/2"} (\code{"ave"}).
 #'
 #' @author David Gerard
+#'
+#' @returns n=1 confidence density.
 #'
 #' @examples
 #' xseq <- seq(-10, 10, length.out = 500)
@@ -272,6 +278,10 @@ d_wc <- function(x, center = c("X", "ave")) {
 #' @examples
 #' ci1(c(1, 2, 10), type = "x")
 #' ci1(c(1, 2, 10), type = "ave")
+#'
+#' @returns
+#' A matrix of with 4 columns: the data, the center, the lower bound,
+#' the upper bound.
 #'
 #' @author David Gerard
 #'

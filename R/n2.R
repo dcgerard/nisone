@@ -133,6 +133,8 @@ eta_alpha <- function(alpha, n, wt = 1) {
 #'
 #' @author David Gerard
 #'
+#' @returns The augmented t-interval of the specified level.
+#'
 #' @export
 #'
 #' @examples
@@ -182,7 +184,7 @@ aug_t <- function(x, A = 0, level = 0.95, wt = 1) {
 #'
 #' @export
 #'
-#' @return The augmented mean
+#' @returns The augmented mean
 #'
 #' @examples
 #' mean_aug(c(1, 2, 3), 4, wt = 10)
@@ -205,7 +207,7 @@ mean_aug <- function(x, A, wt = 1) {
 #'
 #' @export
 #'
-#' @return The augmented variance
+#' @returns The augmented variance
 #'
 #' @examples
 #' var_aug(c(1, 2, 3), 4, wt = 10)

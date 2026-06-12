@@ -12,6 +12,9 @@ p_wc(q, center = c("X", "ave"))
 \item{center}{What is the center of the interval? Either \code{"X"} or
 \code{X/2}, (\code{"ave"}).}
 }
+\value{
+n=1 confidence distribution CDF.
+}
 \description{
 This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
 confidence distribution, not the posterior.

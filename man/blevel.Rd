@@ -19,6 +19,13 @@ The true level of the (1-alpha) credible interval.
 True level of the Bayesian credible interval at a given
 coefficient of variation
 }
+\examples{
+blevel(0.95, 0.5)
+blevel(0.95, 1)
+blevel(0.95, 1.5)
+
+
+}
 \author{
 David Gerard
 }

@@ -25,7 +25,7 @@
 #' @param ... Additional arguments for \code{ddist}, \code{pdist},
 #'     \code{qdist}, and \code{rdist}.
 #'
-#' @return Either a random sample (\code{ridist}),
+#' @returns Either a random sample (\code{ridist}),
 #'     the density (\code{didist}), the tail
 #'     probability (\code{pidist}), or the quantile
 #'     (\code{qidist}) of the inverse distribution.

@@ -13,8 +13,21 @@ bci1(x, A = 0, level = 0.95)
 
 \item{level}{The level of the credible interval}
 }
+\value{
+The credible interval of the specified level.
+}
 \description{
-Bayesian credible interval when n=1
+Suppose \eqn{X \sim N(\mu, \sigma^2)}. This gives you credible intervals
+of a specified level when we use prior \eqn{\sigma = |\mu|} with probability
+1, and \eqn{\pi(\mu) = |\mu - A|^{-1}}. See the \code{\link[=n1post]{n1post()}} for
+access to the full posterior distribution.
+}
+\examples{
+bci1(x = 1, A = 0)
+
+}
+\seealso{
+\code{\link[=n1post]{n1post()}}: Functions to access the full posterior distribution.
 }
 \author{
 David Gerard

@@ -15,6 +15,9 @@ aug_t(x, A = 0, level = 0.95, wt = 1)
 
 \item{wt}{Weight for A. Don't touch this unless you know what you are doing.}
 }
+\value{
+The augmented t-interval of the specified level.
+}
 \description{
 Calculates a t-interval using augmented data \code{c(x,A)}. The multiplier
 of this interval bounds the level above \code{level}, so these intervals

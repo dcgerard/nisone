@@ -90,4 +90,5 @@ browseVignettes("nisone")
 # References
 
 - Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian
-  confidence intervals of the normal mean. *In preparation*.
+  confidence intervals for location parameters in location-scale
+  families. *In preparation*.

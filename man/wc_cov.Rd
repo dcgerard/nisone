@@ -14,6 +14,9 @@ at least 0.5 if \code{center = "ave"}.}
 \item{center}{What is the center of the interval? Either \code{"X"} or
 \code{"ave"}.}
 }
+\value{
+Worst case coefficient of variation \eqn{\nu = |X - A|/\sigma}.
+}
 \description{
 This assumes the random variable X is normal. Intervals are of the form
 center +/- width * |X|.

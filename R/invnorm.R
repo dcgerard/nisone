@@ -13,7 +13,7 @@
 #' @param lower.tail logical; if \code{TRUE} (default), probabilities are P(X<=x)
 #'     otherwise, P(X>x).
 #'
-#' @return Either a random sample (\code{rinvnorm}),
+#' @returns Either a random sample (\code{rinvnorm}),
 #'     the density (\code{dinvnorm}), the tail
 #'     probability (\code{pinvnorm}), or the quantile
 #'     (\code{qinvnorm}) of the inverse normal distribution.

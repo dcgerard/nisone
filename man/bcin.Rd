@@ -28,6 +28,16 @@ The full posterior distribution is generalized inverse normal (implemented
 by \code{\link{ginvnorm}}) with shape parameter \eqn{n + 1}, inverse mean of
 \code{sum(y) / sum(y^2)}, and inverse variance \code{1 / (nu^2 * sum(y^2))}.
 }
+\examples{
+set.seed(1)
+x <- stats::rnorm(4, mean = 1, sd = 1)
+bcin(x = x, A = 3)
+
+
+}
+\seealso{
+\code{\link[=ginvnorm]{ginvnorm()}}: The generalized inverse normal distribution.
+}
 \author{
 David Gerard
 }

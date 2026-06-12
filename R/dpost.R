@@ -37,6 +37,8 @@
 #'
 #' @author David Gerard
 #'
+#' @returns density, distribution, quantile, or random values.
+#'
 #' @examples
 #' set.seed(1)
 #' # Observe x = 2, assume t with 2 df, prior value is A = 1

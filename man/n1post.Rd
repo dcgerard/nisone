@@ -80,6 +80,9 @@ otherwise, P(X>x).}
 
 \item{rdist}{Random generation of standard distribution.}
 }
+\value{
+density, distribution, quantile, or random values.
+}
 \description{
 Density, probability, quantile, and random generation from the posterior
 distribution of the location parameter when one has \eqn{n = 1} observation

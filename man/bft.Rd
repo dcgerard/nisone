@@ -41,6 +41,14 @@ under the alternative, for some arbitrary density \eqn{\pi(\cdot)}. Given
 this setting, the Bayes factor is a function of the \eqn{t}-statistic.
 We calculate it via numeric integration.
 }
+\examples{
+# One sample t, n = 10, t-statistic = 2
+bft(t = 2, nu = 10 - 1, nd = 10)
+
+# Two sample t, n1 = 10, n2 = 8, t-statistic = 2
+bft(t = 2, nu = 10 + 8 - 2, nd = 1 / (1 / 10 + 1 / 8))
+
+}
 \references{
 \itemize{
 \item{Gronau, Q. F., Ly, A., & Wagenmakers, E. J. (2020). Informed Bayesian t-tests. \emph{The American Statistician}. \doi{10.1080/00031305.2018.1562983}}

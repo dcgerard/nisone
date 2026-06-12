@@ -23,6 +23,10 @@ ci1(
 
 \item{level}{The level of the confidence interval.}
 }
+\value{
+A matrix of with 4 columns: the data, the center, the lower bound,
+the upper bound.
+}
 \description{
 When you have one observation, \eqn{X} from some symmetric distribution
 with center \eqn{\mu}, for a pre-specified \eqn{A}, produces
