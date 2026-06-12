@@ -16,6 +16,8 @@ Description: Provides different interval estimates of a location parameter
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+URL: https://dcgerard.github.io/nisone/
+BugReports: https://github.com/dcgerard/nisone/issues
 Suggests: 
     knitr,
     rmarkdown,

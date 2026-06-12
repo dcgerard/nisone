@@ -1,0 +1,4 @@
+url: https://dcgerard.github.io/nisone/
+template:
+  bootstrap: 5
+  math-rendering: mathjax
