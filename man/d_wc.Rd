@@ -7,7 +7,10 @@
 d_wc(x, center = c("X", "ave"))
 }
 \arguments{
-\item{x}{The value to evaluate the density. Only defined for abs(q) > 1}
+\item{x}{The value at which to calculate the density.
+Only defined for \code{abs(x) >= 1} when
+\code{center = "X"}, and for \code{abs(x) >= 0.5} when
+\code{center = "ave"}.}
 
 \item{center}{What is the center of the interval? Either \code{"X"} or
 \code{"X/2"} (\code{"ave"}).}
@@ -16,8 +19,13 @@ d_wc(x, center = c("X", "ave"))
 n=1 confidence density.
 }
 \description{
-This is the implied density of (mu-X) / |X|, which is a pivotal quantity.
-This is the confidence distribution, not the posterior.
+Let \eqn{X \sim N(\mu, \sigma^2)}. Consider intervals of the form
+\eqn{X \pm \eta |X|} or \eqn{X / 2 \pm \eta |X|}. These intervals
+define a confidence distribution of \eqn{\mu}. This is the
+density of the confidence distribution of \eqn{(\mu - X)/|X|}
+or \eqn{(\mu - X/2)/|X|}. Please note that \eqn{\mu} is random
+here not \eqn{X}. Also note that this confidence distribution does
+not exist between the 25th and 75th percentiles.
 }
 \examples{
 xseq <- seq(-10, 10, length.out = 500)
@@ -27,6 +35,9 @@ plot(xseq, dseq, type = "l")
 dseq <- d_wc(xseq, center = "ave")
 plot(xseq, dseq, type = "l")
 
+}
+\seealso{
+\code{\link[=p_wc]{p_wc()}}
 }
 \author{
 David Gerard

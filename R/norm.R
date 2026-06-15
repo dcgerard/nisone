@@ -167,16 +167,25 @@ wc_width <- function(alpha, center = c("X", "ave", "approx"), family = c("normal
 
 #' Confidence distribution CDF based on n=1 confidence interval
 #'
-#' This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
-#' confidence distribution, not the posterior.
+#' Let \eqn{X \sim N(\mu, \sigma^2)}. Consider intervals of the form
+#' \eqn{X \pm \eta |X|} or \eqn{X / 2 \pm \eta |X|}. These intervals
+#' define a confidence distribution of \eqn{\mu}. This is the
+#' CDF of the confidence distribution of \eqn{(\mu - X)/|X|}
+#' or \eqn{(\mu - X/2)/|X|}. Please note that \eqn{\mu} is random
+#' here not \eqn{X}. Also note that this confidence distribution does
+#' not exist between the 25th and 75th percentiles.
 #'
-#' @param q The quantile. Only defined for abs(q) >= 1
+#' @param q The quantile. Only defined for \code{abs(q) >= 1} when
+#'     \code{center = "X"}, and for \code{abs(q) >= 0.5} when
+#'     \code{center = "ave"}.
 #' @param center What is the center of the interval? Either \code{"X"} or
 #'     \code{X/2}, (\code{"ave"}).
 #'
 #' @author David Gerard
 #'
 #' @returns n=1 confidence distribution CDF.
+#'
+#' @seealso [d_wc()]
 #'
 #' @examples
 #' qseq <- seq(-10, 10, length.out = 100)
@@ -213,16 +222,26 @@ p_wc <- function(q, center = c("X", "ave")) {
 
 #' Confidence density based on n=1 confidence interval
 #'
-#' This is the implied density of (mu-X) / |X|, which is a pivotal quantity.
-#' This is the confidence distribution, not the posterior.
+#' Let \eqn{X \sim N(\mu, \sigma^2)}. Consider intervals of the form
+#' \eqn{X \pm \eta |X|} or \eqn{X / 2 \pm \eta |X|}. These intervals
+#' define a confidence distribution of \eqn{\mu}. This is the
+#' density of the confidence distribution of \eqn{(\mu - X)/|X|}
+#' or \eqn{(\mu - X/2)/|X|}. Please note that \eqn{\mu} is random
+#' here not \eqn{X}. Also note that this confidence distribution does
+#' not exist between the 25th and 75th percentiles.
 #'
-#' @param x The value to evaluate the density. Only defined for abs(q) > 1
+#' @param x The value at which to calculate the density.
+#'     Only defined for \code{abs(x) >= 1} when
+#'     \code{center = "X"}, and for \code{abs(x) >= 0.5} when
+#'     \code{center = "ave"}.
 #' @param center What is the center of the interval? Either \code{"X"} or
 #'     \code{"X/2"} (\code{"ave"}).
 #'
 #' @author David Gerard
 #'
 #' @returns n=1 confidence density.
+#'
+#' @seealso [p_wc()]
 #'
 #' @examples
 #' xseq <- seq(-10, 10, length.out = 500)

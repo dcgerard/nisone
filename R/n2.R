@@ -126,6 +126,24 @@ eta_alpha <- function(alpha, n, wt = 1) {
 #' multipliers in an internal dataset. But it can be slow (on the order of
 #' a second) for other confidence levels or larger sample sizes.
 #'
+#' Suppose \eqn{X_1,\ldots,X_n \sim N(\mu,\sigma^2)}. Suppose we have
+#' prior value \eqn{A}. This provides intervals of the form
+#' \deqn{\hat{\mu} \pm \eta \hat{\sigma}/\sqrt{n + 1},}
+#' where \eqn{\hat{\mu}} and \eqn{\hat{\sigma}} are the sample mean and
+#' sample standard deviation of the augmented data \eqn{X_1,\ldots,X_n,A},
+#' and \eqn{\eta} is chosen large enough to maintain the confidence level
+#' at all parameter values.
+#'
+#' The `wt` argument allows for more copies of \eqn{A}
+#' to be included in the data augmentation. But it doesn't work well with
+#' more data augmentation so you should not set it above 1. Though, you can set
+#' `wt` to be between 0 and 1 (to have less data augmentation) and this
+#' does seem to work pretty well, but I haven't studied it extensively,
+#' so use at your own risk.
+#'
+#' Note that you have to choose \eqn{A} \emph{before} seeing the data. If you choose
+#' it based on the data, then you no longer maintain the confidence level.
+#'
 #' @param x The vector of data
 #' @param A The prior mean
 #' @param level The level of the interval

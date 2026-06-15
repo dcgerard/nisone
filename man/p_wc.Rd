@@ -7,7 +7,9 @@
 p_wc(q, center = c("X", "ave"))
 }
 \arguments{
-\item{q}{The quantile. Only defined for abs(q) >= 1}
+\item{q}{The quantile. Only defined for \code{abs(q) >= 1} when
+\code{center = "X"}, and for \code{abs(q) >= 0.5} when
+\code{center = "ave"}.}
 
 \item{center}{What is the center of the interval? Either \code{"X"} or
 \code{X/2}, (\code{"ave"}).}
@@ -16,14 +18,22 @@ p_wc(q, center = c("X", "ave"))
 n=1 confidence distribution CDF.
 }
 \description{
-This is the CDF of (mu-X) / |X|, which is a pivotal quantity. This is the
-confidence distribution, not the posterior.
+Let \eqn{X \sim N(\mu, \sigma^2)}. Consider intervals of the form
+\eqn{X \pm \eta |X|} or \eqn{X / 2 \pm \eta |X|}. These intervals
+define a confidence distribution of \eqn{\mu}. This is the
+CDF of the confidence distribution of \eqn{(\mu - X)/|X|}
+or \eqn{(\mu - X/2)/|X|}. Please note that \eqn{\mu} is random
+here not \eqn{X}. Also note that this confidence distribution does
+not exist between the 25th and 75th percentiles.
 }
 \examples{
 qseq <- seq(-10, 10, length.out = 100)
 pseq <- p_wc(qseq)
 plot(qseq, pseq, type = "l", xlab = "q", ylab = "CDF")
 
+}
+\seealso{
+\code{\link[=d_wc]{d_wc()}}
 }
 \author{
 David Gerard
