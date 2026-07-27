@@ -79,7 +79,7 @@ and $\delta_{\nu^*}(\nu)$ is a pointmass at $\nu^*$. This is asymptotic *not* in
 
 In the normal case, this corresponds to the prior
 $$
-\pi(\mu) = |\mu - A|^{-1}\\
+\pi(\mu) = |\mu - A|^{-1} \text{ and }
 \sigma^2 = (\mu - A)^2 \text{ w.p. 1}.
 $$
 The resulting posterior distribution is inverse normal (see below). We have implemented this Bayesian approach in `bci1()`. Though, the asymptotics are so good that you end up getting almost the exact same interval as the frequentist $n=1$ interval,
