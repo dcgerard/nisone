@@ -220,7 +220,8 @@ More generally, we have functions for the generalized inverse normal.
   [doi:10.1109/TIT.1987.1057306](https://doi.org/10.1109/TIT.1987.1057306)
 - Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian
   confidence intervals for location parameters in location-scale
-  families. *In preparation*.
+  families. *arXiv Preprint*.
+  [doi:10.48550/arXiv.2607.25007](https://doi.org/10.48550/arXiv.2607.25007)
 - Gronau, Q. F., Ly, A., & Wagenmakers, E. J. (2020). Informed Bayesian
   *t*-Tests. *The American Statistician*, 74(2), 137–143.
   [doi:10.1080/00031305.2018.1562983](https://doi.org/10.1080/00031305.2018.1562983)

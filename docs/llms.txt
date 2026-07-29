@@ -47,7 +47,8 @@ See more functionality by running
 
 - Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian
   confidence intervals for location parameters in location-scale
-  families. *In preparation*.
+  families. *arXiv Preprint*.
+  [doi:10.48550/arXiv.2607.25007](https://doi.org/10.48550/arXiv.2607.25007)
 
 # Package index
 
