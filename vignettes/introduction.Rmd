@@ -196,6 +196,6 @@ abline(v = modes, col = "#56B4E9", lty = 2)
 # References
 
 - Blachman, N., & Machol, R. (1987). Confidence intervals based on one or more observations. *IEEE Transactions on Information Theory*, 33(3), 373-382. [doi:10.1109/TIT.1987.1057306](https://doi.org/10.1109/TIT.1987.1057306)
-- Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian confidence intervals for location parameters in location-scale families. *In preparation*.
+- Gerard, D. (2026). Constructing and extending *n* = 1 Bayesian confidence intervals for location parameters in location-scale families. *arXiv Preprint*. [doi:10.48550/arXiv.2607.25007](https://doi.org/10.48550/arXiv.2607.25007)
 - Gronau, Q. F., Ly, A., & Wagenmakers, E. J. (2020). Informed Bayesian *t*-Tests. *The American Statistician*, 74(2), 137–143. [doi:10.1080/00031305.2018.1562983](https://doi.org/10.1080/00031305.2018.1562983)
 - Robert, C. (1991). Generalized inverse normal distributions. *Statistics & Probability Letters*, 11(1), 37-41. [doi:10.1016/0167-7152(91)90174-P](https://doi.org/10.1016/0167-7152(91)90174-P)

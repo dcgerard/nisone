@@ -12,7 +12,8 @@ Description: Provides different interval estimates of a location parameter
     when n=1, new Bayesian analogues of these classical methods, and extensions
     of these methods to larger sample sizes in the normal case. Other functions
     calculate Bayes factors based on t-statistics, and implement of the 
-    (generalized) inverse normal distribution.
+    (generalized) inverse normal distribution. These methods are described in
+    Gerard (2026) <doi:10.48550/arXiv.2607.25007>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

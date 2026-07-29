@@ -3,10 +3,10 @@ bibentry(
   title = "Constructing and extending n = 1 Bayesian confidence intervals for
 location parameters in location-scale families",
   author = "David Gerard",
-  journal = "In preparation",
+  journal = "arXiv Preprint",
   year = "2026",
   volume = "",
   number = "",
   pages = "",
-  doi = ""
+  doi = "10.48550/arXiv.2607.25007"
 )
