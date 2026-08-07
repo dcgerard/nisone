@@ -1,6 +1,6 @@
 Package: nisone
 Title: Inference for Samples of Size at Least One
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("David", 
            "Gerard",
@@ -26,5 +26,5 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 3.5)
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 VignetteBuilder: knitr

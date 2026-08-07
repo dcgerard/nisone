@@ -73,7 +73,7 @@ post_samp <- function(x, A = 0, iter = 10000, warmup = floor(iter/2), nu2_shape 
   for (i in seq_len(iter)) {
 
     if (i %in% round(iter * seq(0, 1, by = 0.1))) {
-      cat(round(i / iter * 100), "percent done\n")
+      message(paste0(round(i / iter * 100), " percent done"))
     }
 
     ## nu given beta
